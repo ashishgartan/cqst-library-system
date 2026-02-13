@@ -96,7 +96,7 @@ exports.changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
     const userId = req.user._id; // Assuming you have auth middleware
-
+    console.log(currentPassword, newPassword);
     // 1. Find user and include password (if your schema hides it by default)
     const user = await User.findById(userId).select("+password");
 

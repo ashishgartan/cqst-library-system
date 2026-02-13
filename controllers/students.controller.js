@@ -9,25 +9,47 @@ const BorrowHistory = require("../models/BorrowHistory");
 
 exports.getStudentsPaginated = async (req, res) => {
   try {
+    // 1. Destructure and parse query parameters
+    const { q, limit, status, batch } = req.query;
     const page = parseInt(req.query.page) || 1;
-    const limit = req.query.limit;
-    const skip = (page - 1) * limit;
+    const pageLimit = parseInt(limit) || 10;
+    const skip = (page - 1) * pageLimit;
 
-    // 1. Fetch the basic student list and total count
+    // 2. Build Dynamic Query Object
+    let query = { role: "student" };
+
+    // Search Filter (Matches Name, Email, or Roll Number)
+    if (q) {
+      query.$or = [
+        { name: { $regex: q, $options: "i" } },
+        { email: { $regex: q, $options: "i" } },
+        { roll_no: { $regex: q, $options: "i" } },
+      ];
+    }
+
+    // Status Filter (Handles "true"/"false" strings from frontend)
+    if (status === "true" || status === "false") {
+      query.is_active = status === "true";
+    }
+
+    // Batch Filter
+    if (batch) {
+      query.batch = batch; // Assumes your User schema has a 'batch' field
+    }
+
+    // 3. Execute count and find in parallel
     const [rawStudents, total] = await Promise.all([
-      User.find({ role: "student" })
-        .skip(skip)
-        .limit(limit)
+      User.find(query)
         .sort({ created_at: -1 })
-        .lean(), // Using lean() for faster processing and to allow adding custom properties
-      User.countDocuments({ role: "student" }),
+        .skip(skip)
+        .limit(pageLimit)
+        .lean(),
+      User.countDocuments(query),
     ]);
 
-    // 2. Map through students to find how many books they currently have (not returned)
+    // 4. Attach Active Book Counts
     const studentsWithCounts = await Promise.all(
       rawStudents.map(async (student) => {
-        // Count documents in BorrowHistory where this student is the borrower
-        // and the book has not been returned yet
         const activeIssuesCount = await BorrowHistory.countDocuments({
           borrowed_by: student._id,
           book_returned: false,
@@ -40,18 +62,20 @@ exports.getStudentsPaginated = async (req, res) => {
       })
     );
 
+    // 5. Return Response
     res.json({
       success: true,
       students: studentsWithCounts,
-      totalPages: Math.ceil(total / limit),
+      totalPages: Math.ceil(total / pageLimit),
       currentPage: page,
       totalStudents: total,
     });
   } catch (err) {
-    console.error(err);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to fetch students" });
+    console.error("Pagination Error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error during fetch",
+    });
   }
 };
 

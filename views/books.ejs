@@ -276,6 +276,7 @@
       };
 
       function toggleAdvancedSearch() {
+        elements.searchInput.value = "";
         const isHidden = elements.advancedPanel.classList.contains("hidden");
         if (isHidden) {
           elements.advancedPanel.classList.remove("hidden");
@@ -432,6 +433,7 @@
         try {
           const res = await fetch(`/books/paginated?${getDynamicQuery(page)}`);
           const data = await res.json();
+          console.log(data);
           renderBooks(data);
         } catch (err) {
           elements.tbody.innerHTML = `<tr><td colspan="5" class="text-center py-24 text-red-500 text-xs font-bold">Failed to load data. Please refresh.</td></tr>`;

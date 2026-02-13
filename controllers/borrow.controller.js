@@ -208,7 +208,7 @@ exports.getBorrowHistoryPaginated = async (req, res) => {
   console.log("Fetching borrow history, page:", req.query.page);
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = 10;
+    const limit = req.query.limit;
     const skip = (page - 1) * limit;
 
     const [histories, total] = await Promise.all([

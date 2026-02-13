@@ -6,24 +6,129 @@ const BorrowHistory = require("../models/BorrowHistory");
 // API & UI: Get paginated books
 // Route: GET /api/books/paginated?page=1
 // ============================
+// exports.getPaginatedBooks = async (req, res) => {
+//   try {
+//     // 1. Parse query parameters
+//     const { q, category, status, limit } = req.query;
+//     const page = parseInt(req.query.page) || 1;
+//     const pageLimit = parseInt(limit) || 10;
+//     const skip = (page - 1) * pageLimit;
+
+//     // 2. Build the Dynamic Filter Object
+//     let query = {};
+
+//     // Search by Title, Author, or ISBN
+//     if (q) {
+//       query.$or = [
+//         { title: { $regex: q, $options: "i" } },
+//         { author: { $regex: q, $options: "i" } },
+//         { isbn: { $regex: q, $options: "i" } },
+//       ];
+//     }
+
+//     // Filter by Category (e.g., "Computer Science", "Fiction")
+//     if (category) {
+//       query.category = category;
+//     }
+
+//     // Filter by Availability Status
+//     // If status is 'available', we look for books where 'available_copies' > 0
+//     if (status === "available") {
+//       query.available_copies = { $gt: 0 };
+//     } else if (status === "out_of_stock") {
+//       query.available_copies = { $eq: 0 };
+//     }
+
+//     // 3. Execute Database Operations
+//     const [books, total] = await Promise.all([
+//       Book.find(query)
+//         .sort({ createdAt: -1 })
+//         .skip(skip)
+//         .limit(pageLimit)
+//         .lean(), // Lean makes the query faster
+//       Book.countDocuments(query),
+//     ]);
+
+//     // 4. Send Response
+//     res.json({
+//       success: true,
+//       books,
+//       totalPages: Math.ceil(total / pageLimit),
+//       currentPage: page,
+//       totalBooks: total,
+//     });
+//   } catch (err) {
+//     console.error("Book Pagination Error:", err);
+//     res.status(500).json({
+//       success: false,
+//       message: "Failed to fetch books from catalog",
+//     });
+//   }
+// };
 exports.getPaginatedBooks = async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = req.query.limit;
-  const skip = (page - 1) * limit;
+  try {
+    // 1. Destructure all possible query parameters from the URL
+    const { q, limit, status, subject, genre, isActive, page } = req.query;
 
-  const [books, total] = await Promise.all([
-    Book.find().skip(skip).limit(limit).sort({ createdAt: -1 }),
-    Book.countDocuments(),
-  ]);
+    const currentPage = parseInt(page) || 1;
+    const pageLimit = parseInt(limit) || 10;
+    const skip = (currentPage - 1) * pageLimit;
 
-  res.json({
-    books,
-    totalPages: Math.ceil(total / limit),
-    currentPage: page,
-    totalBooks: total,
-  });
+    // 2. Build the Dynamic Filter Object
+    let query = {};
+
+    // General Search (Title/Author)
+    if (q) {
+      query.$or = [
+        { title: { $regex: q, $options: "i" } },
+        { author: { $regex: q, $options: "i" } },
+      ];
+    }
+
+    // Exact Match Filters
+    if (subject) query.subject = subject;
+    if (genre) query.genre = genre;
+
+    // Handle isActive (Convert string "true" to Boolean)
+    if (isActive !== undefined) {
+      query.isActive = isActive === "true";
+    }
+
+    // Availability Logic based on the 'status' param
+    if (status === "available") {
+      query.available_copies = { $gt: 0 };
+    } else if (status === "out_of_stock") {
+      query.available_copies = { $eq: 0 };
+    }
+
+    // 3. Parallel Execution for Speed
+    const [books, total] = await Promise.all([
+      Book.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(pageLimit)
+        .lean(),
+      Book.countDocuments(query),
+    ]);
+
+    // 4. Structured JSON Response
+    res.json({
+      success: true,
+      books,
+      totalBooks: total,
+      totalPages: Math.ceil(total / pageLimit),
+      currentPage: currentPage,
+      limit: pageLimit,
+      activeFilters: { subject, genre, status }, // Useful for frontend debugging
+    });
+  } catch (err) {
+    console.error("Pagination Error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error while filtering catalog",
+    });
+  }
 };
-
 // ============================
 // API: Search books (all results, no pagination)
 // Route: GET /books/search?q=query

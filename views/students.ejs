@@ -43,6 +43,7 @@
 
     <main class="flex-1 p-6 md:p-10">
       <div class="max-w-7xl mx-auto space-y-8">
+        <!-- Student List and Loading  and Backupdata and Enroll Student UI -->
         <div
           class="flex flex-col md:flex-row md:items-end justify-between gap-6"
         >
@@ -51,7 +52,7 @@
               class="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3"
             >
               <i data-lucide="users" class="text-red-600 w-8 h-8"></i>
-              Student Registry
+              Student List
             </h2>
             <div class="flex items-center gap-2 mt-2">
               <span
@@ -81,6 +82,7 @@
           </div>
         </div>
 
+        <!-- Search Bar and Page Size UI -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
           <div class="lg:col-span-8 relative group">
             <i
@@ -124,46 +126,52 @@
           </div>
         </div>
 
+        <!-- Advanced Panel UI -->
         <div
           id="advancedPanel"
           class="hidden opacity-0 -translate-y-4 transition-all duration-300"
         >
-          <div class="bg-slate-900 rounded-[2rem] p-8 shadow-2xl">
+          <div
+            class="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl shadow-slate-200/50"
+          >
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div class="space-y-3">
                 <label
-                  class="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1"
+                  class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1"
                   >Academic Batch</label
                 >
                 <select
                   id="batch-filter"
-                  class="w-full bg-slate-800 border border-slate-700 rounded-xl px-5 py-3 text-xs text-white font-bold outline-none focus:border-red-500"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3 text-xs text-slate-900 font-bold outline-none focus:border-red-500 focus:bg-white transition-all"
                 ></select>
               </div>
+
               <div class="space-y-3">
                 <label
-                  class="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1"
+                  class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1"
                   >Account Status</label
                 >
                 <select
                   id="status-filter"
-                  class="w-full bg-slate-800 border border-slate-700 rounded-xl px-5 py-3 text-xs text-white font-bold outline-none focus:border-red-500"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3 text-xs text-slate-900 font-bold outline-none focus:border-red-500 focus:bg-white transition-all"
                 >
                   <option value="">All Students</option>
                   <option value="true">Active Members</option>
                   <option value="false">Revoked Access</option>
                 </select>
               </div>
+
               <div class="flex items-end gap-3">
                 <button
                   onclick="manuallyApplySearch()"
-                  class="flex-1 h-12 bg-red-600 hover:bg-red-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all"
+                  class="flex-1 h-12 bg-red-600 hover:bg-red-700 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-red-100"
                 >
                   Apply Filters
                 </button>
+
                 <button
                   onclick="resetFilters()"
-                  class="h-12 px-6 text-[10px] font-black text-slate-400 hover:text-white uppercase transition-colors"
+                  class="h-12 px-6 bg-slate-100 text-[10px] font-black text-slate-500 hover:text-slate-900 hover:bg-slate-200 uppercase rounded-xl transition-all"
                 >
                   Reset
                 </button>
@@ -171,10 +179,11 @@
             </div>
           </div>
         </div>
-
+        <!-- Table and Pagination UI -->
         <div
           class="content-card rounded-[2.5rem] overflow-hidden border-none shadow-xl"
         >
+          <!-- Table Head UI -->
           <div class="overflow-x-auto">
             <table class="min-w-full text-left registry-table">
               <thead class="bg-slate-50/50">
@@ -182,14 +191,15 @@
                   <th>Identity</th>
                   <th>Batch / Stream</th>
                   <th>ID / Roll No</th>
-                  <th>Loan Count</th>
+                  <th>Book Count</th>
                   <th class="text-right">Actions</th>
                 </tr>
               </thead>
+              <!-- Table Body UI -->
               <tbody id="studentList" class="divide-y divide-slate-50"></tbody>
             </table>
           </div>
-
+          <!-- Pagination Controls UI -->
           <div
             class="bg-slate-50/50 p-6 border-t border-slate-100 flex justify-center"
           >
@@ -217,7 +227,11 @@
         collapseIcon: document.getElementById("collapseIcon"),
       };
 
+      /**
+       * Animates the Advanced Search panel using CSS transitions
+       */
       function toggleAdvancedSearch() {
+        elements.searchInput.value = "";
         const isHidden = elements.advancedPanel.classList.contains("hidden");
         if (isHidden) {
           elements.advancedPanel.classList.remove("hidden");
@@ -243,6 +257,9 @@
         }
       }
 
+      /**
+       * Constructs the URL search parameters based on current filter state
+       */
       const getDynamicQuery = (page = 1) => {
         const params = new URLSearchParams({
           q: elements.searchInput.value.trim(),
@@ -254,6 +271,9 @@
         return params.toString();
       };
 
+      /**
+       * Generates HTML rows for the student table based on API response
+       */
       function renderStudents(data) {
         const students = data.students || [];
         elements.tbody.innerHTML = students.length
@@ -315,6 +335,9 @@
         lucide.createIcons();
       }
 
+      /**
+       * Creates the Previous/Next pagination UI
+       */
       function renderPagination(totalPages, currentPage) {
         if (totalPages <= 1) {
           elements.paginationControls.innerHTML = "";
@@ -322,13 +345,17 @@
         }
         elements.paginationControls.innerHTML = `
           <div class="flex items-center gap-6">
-            <button onclick="changePage(${currentPage - 1})" ${
+            <button class="hover:bg-red-200 rounded-xl" onclick="changePage(${
+              currentPage - 1
+            })" ${
           currentPage === 1 ? "disabled" : ""
         } class="text-slate-400 hover:text-slate-900 disabled:opacity-30 transition-all">
               <i data-lucide="arrow-left" class="w-5 h-5"></i>
             </button>
             <span class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-900">Page ${currentPage} <span class="text-slate-300">of</span> ${totalPages}</span>
-            <button onclick="changePage(${currentPage + 1})" ${
+            <button  class="hover:bg-red-200 rounded-xl" onclick="changePage(${
+              currentPage + 1
+            })" ${
           currentPage === totalPages ? "disabled" : ""
         } class="text-slate-400 hover:text-slate-900 disabled:opacity-30 transition-all">
               <i data-lucide="arrow-right" class="w-5 h-5"></i>
@@ -337,6 +364,9 @@
         lucide.createIcons();
       }
 
+      /**
+       * Fetches data from the server with current filters and pagination
+       */
       async function loadStudents(page = 1) {
         elements.tbody.innerHTML = `<tr><td colspan="5" class="py-24 text-center"><div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-200 border-t-red-500"></div></td></tr>`;
         try {
@@ -350,12 +380,18 @@
         }
       }
 
+      /**
+       * Global handler for page changes
+       */
       function changePage(page) {
         currentPage = page;
         loadStudents(page);
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
+      /**
+       * Clears all filters and reloads the first page
+       */
       function resetFilters() {
         elements.searchInput.value = "";
         elements.statusFilter.value = "";
@@ -363,6 +399,9 @@
         loadStudents(1);
       }
 
+      /**
+       * Fetches unique batch names from DB to populate the filter dropdown
+       */
       async function populateBatchDropdown() {
         try {
           const res = await fetch("/students/batches");
@@ -379,11 +418,15 @@
         }
       }
 
+      /**
+       * Debounce implementation to prevent excessive API calls while typing
+       */
       const searchFun = () => {
         clearTimeout(window.searchTimer);
         window.searchTimer = setTimeout(() => loadStudents(1), 400);
       };
 
+      // Attach event listeners to all filter inputs
       [
         "historySearch",
         "limitSelector",
@@ -393,6 +436,7 @@
         document.getElementById(id).addEventListener("input", searchFun);
       });
 
+      // Initializing routines on page load
       document.addEventListener("DOMContentLoaded", () => {
         populateBatchDropdown();
         loadStudents(1);
