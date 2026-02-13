@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Library Manager | Dashboard</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap");
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f8fafc;
+        color: #1e293b;
+      }
+
+      /* Simple, clean white cards */
+      .stat-card {
+        @apply bg-white border border-slate-200 rounded-3xl p-8 shadow-sm transition-all hover:shadow-md;
+      }
+      .label-sub {
+        @apply text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 block;
+      }
+      .value-main {
+        @apply text-4xl font-extrabold text-slate-900 tracking-tight;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen">
+    <%- include('partials/header') %>
+
+    <main class="max-w-7xl mx-auto p-6 space-y-8">
+      <div
+        class="flex flex-col md:flex-row md:items-center justify-between gap-4"
+      >
+        <div>
+          <h1 class="text-3xl font-black text-slate-900">Library Overview</h1>
+          <p class="text-slate-500 font-medium">
+            Manage your books and member activity
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span
+            id="liveClock"
+            class="bg-white border border-slate-200 px-4 py-2 rounded-2xl font-bold text-slate-600 shadow-sm"
+            >00:00:00</span
+          >
+          <button
+            onclick="loadDashboard()"
+            class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-2xl font-bold shadow-lg shadow-red-200 transition-all active:scale-95"
+          >
+            Refresh Data
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="stat-card">
+          <span class="label-sub">Total Fines</span>
+          <h2 class="value-main text-red-600" id="totalFine">₹0</h2>
+          <div
+            class="mt-4 flex items-center gap-2 text-slate-500 text-sm font-medium"
+          >
+            <i data-lucide="wallet" class="w-4 h-4"></i>
+            <span>Pending collection</span>
+          </div>
+        </div>
+
+        <div class="stat-card border-b-4 border-b-blue-500">
+          <span class="label-sub">Books Issued</span>
+          <h2 class="value-main" id="activeBorrows">0</h2>
+          <div
+            class="mt-4 flex items-center gap-2 text-slate-500 text-sm font-medium"
+          >
+            <i data-lucide="book-up" class="w-4 h-4"></i>
+            <span>Currently with members</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <span class="label-sub">Most Popular Book</span>
+          <h2
+            class="text-xl font-bold text-slate-900 mt-1 line-clamp-1"
+            id="trendingBook"
+          >
+            Loading...
+          </h2>
+          <div
+            class="mt-4 flex items-center gap-2 text-slate-500 text-sm font-medium"
+          >
+            <i data-lucide="trending-up" class="w-4 h-4 text-green-500"></i>
+            <span>Highest demand</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div
+          class="bg-white border border-slate-200 rounded-3xl p-8 flex items-center justify-between"
+        >
+          <div class="flex items-center gap-6">
+            <div
+              class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600"
+            >
+              <i data-lucide="book-open" class="w-8 h-8"></i>
+            </div>
+            <div>
+              <span class="label-sub">Total Books</span>
+              <span class="text-3xl font-black text-slate-900" id="totalBooks"
+                >0</span
+              >
+            </div>
+          </div>
+          <div class="h-12 w-px bg-slate-100 hidden sm:block"></div>
+          <div class="flex items-center gap-6">
+            <div
+              class="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center text-green-600"
+            >
+              <i data-lucide="users" class="w-8 h-8"></i>
+            </div>
+            <div>
+              <span class="label-sub">Registered Members</span>
+              <span
+                class="text-3xl font-black text-slate-900"
+                id="totalStudents"
+                >0</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 rounded-3xl p-8 shadow-xl shadow-slate-200">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-white font-bold text-lg">Recent Activity</h3>
+            <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+          </div>
+          <div class="bg-slate-800/50 rounded-2xl p-4">
+            <p id="latestBorrow" class="text-slate-300 font-medium text-sm">
+              Waiting for latest updates...
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="text-center p-4">
+          <span class="label-sub">All-Time Issues</span>
+          <span class="text-2xl font-black text-slate-900" id="totalBorrows"
+            >0</span
+          >
+        </div>
+        <div class="text-center p-4 border-l border-slate-200">
+          <span class="label-sub">Success Rate</span>
+          <span class="text-2xl font-black text-green-600">98%</span>
+        </div>
+        <div class="text-center p-4 border-l border-slate-200">
+          <span class="label-sub">New Members</span>
+          <span class="text-2xl font-black text-slate-900">+12</span>
+        </div>
+        <div class="text-center p-4 border-l border-slate-200">
+          <span class="label-sub">System Status</span>
+          <span class="text-2xl font-black text-blue-600">Active</span>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      lucide.createIcons();
+
+      function updateClock() {
+        const now = new Date();
+        document.getElementById("liveClock").textContent =
+          now.toLocaleTimeString();
+      }
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      async function loadDashboard() {
+        try {
+          const res = await fetch("/dashboard/stats");
+          const data = await res.json();
+
+          document.getElementById("totalStudents").textContent =
+            data.totalStudents;
+          document.getElementById("totalBooks").textContent = data.totalBooks;
+          document.getElementById("totalBorrows").textContent =
+            data.totalBorrows;
+          document.getElementById("activeBorrows").textContent =
+            data.activeBorrows;
+          document.getElementById("totalFine").textContent =
+            "₹" + data.totalFine;
+
+          if (data.latestBorrow) {
+            document.getElementById(
+              "latestBorrow"
+            ).innerHTML = `<strong>${data.latestBorrow.borrowed_by.name}</strong> issued <strong>${data.latestBorrow.borrowed_book.title}</strong>`;
+          }
+
+          document.getElementById("trendingBook").textContent =
+            data.trendingBook ? data.trendingBook.title : "Calculating...";
+        } catch (error) {
+          console.error("Error loading dashboard:", error);
+        }
+      }
+
+      loadDashboard();
+    </script>
+  </body>
+</html>

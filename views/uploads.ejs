@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Ingestion | CQST Library</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap");
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f8fafc;
+      }
+      .upload-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        border-radius: 2rem;
+      }
+      .form-input {
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+        outline: none;
+        width: 100%;
+      }
+      .form-input:focus {
+        border-color: #ef4444;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.05);
+      }
+    </style>
+  </head>
+  <body class="text-slate-700 min-h-screen flex flex-col">
+    <%- include('partials/header') %>
+
+    <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full">
+      <div class="mb-10 text-center md:text-left">
+        <h1
+          class="text-4xl font-black text-slate-900 tracking-tight flex items-center gap-4 justify-center md:justify-start"
+        >
+          <i data-lucide="database" class="text-red-600 w-10 h-10"></i>
+          Data Management
+        </h1>
+        <p
+          class="text-slate-400 font-bold text-xs uppercase tracking-widest mt-2 ml-1"
+        >
+          Central Registry & Batch Ingestion
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div class="lg:col-span-5 space-y-8">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="w-8 h-[2px] bg-slate-200"></span>
+            <h2
+              class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400"
+            >
+              Manual Registration
+            </h2>
+          </div>
+
+          <section class="upload-card p-8">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="p-2 bg-red-50 text-red-600 rounded-lg">
+                <i data-lucide="book-plus" class="w-5 h-5"></i>
+              </div>
+              <h3 class="font-black text-slate-900">New Resource</h3>
+            </div>
+            <form id="singleBookForm" class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  name="ref_no"
+                  placeholder="Ref No"
+                  class="form-input"
+                  required
+                />
+                <input
+                  type="text"
+                  name="genre"
+                  placeholder="Genre"
+                  class="form-input"
+                />
+              </div>
+              <input
+                type="text"
+                name="title"
+                placeholder="Full Title"
+                class="form-input"
+                required
+              />
+              <input
+                type="text"
+                name="author"
+                placeholder="Primary Author"
+                class="form-input"
+                required
+              />
+              <textarea
+                name="description"
+                placeholder="Short Synopsis"
+                class="form-input h-24 resize-none"
+              ></textarea>
+              <button
+                type="submit"
+                class="w-full bg-slate-900 hover:bg-red-600 text-white font-black py-4 rounded-xl transition-all shadow-lg shadow-slate-200 uppercase tracking-widest text-[10px]"
+              >
+                Registry Book
+              </button>
+            </form>
+          </section>
+
+          <section class="upload-card p-8">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="p-2 bg-slate-50 text-slate-600 rounded-lg">
+                <i data-lucide="user-plus" class="w-5 h-5"></i>
+              </div>
+              <h3 class="font-black text-slate-900">New Member</h3>
+            </div>
+            <form id="singleStudentForm" class="space-y-4">
+              <input
+                type="text"
+                name="name"
+                placeholder="Full Name"
+                class="form-input"
+                required
+              />
+              <div class="grid grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  name="roll_no"
+                  placeholder="Roll Number"
+                  class="form-input"
+                  required
+                />
+                <input
+                  type="text"
+                  name="stream"
+                  placeholder="Stream"
+                  class="form-input"
+                />
+              </div>
+              <input
+                type="email"
+                name="email"
+                placeholder="Institutional Email"
+                class="form-input"
+                required
+              />
+              <button
+                type="submit"
+                class="w-full bg-slate-100 hover:bg-slate-200 text-slate-900 font-black py-4 rounded-xl transition-all uppercase tracking-widest text-[10px]"
+              >
+                Enroll Member
+              </button>
+            </form>
+          </section>
+        </div>
+
+        <div class="lg:col-span-7 space-y-8">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="w-8 h-[2px] bg-slate-200"></span>
+            <h2
+              class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400"
+            >
+              Batch Operations
+            </h2>
+          </div>
+
+          <div
+            id="progressSection"
+            class="hidden upload-card p-6 border-red-100 bg-red-50/30"
+          >
+            <div class="flex justify-between items-center mb-4">
+              <div class="flex items-center gap-2">
+                <i
+                  data-lucide="refresh-cw"
+                  class="w-4 h-4 text-red-600 animate-spin"
+                ></i>
+                <span
+                  id="uploadTarget"
+                  class="text-[10px] font-black text-slate-900 uppercase tracking-widest"
+                  >Processing...</span
+                >
+              </div>
+              <span id="percentText" class="text-xs font-black text-red-600"
+                >0%</span
+              >
+            </div>
+            <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+              <div
+                id="progressBar"
+                class="bg-red-600 h-full w-0 transition-all duration-300"
+              ></div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <section
+              class="upload-card p-8 border-dashed border-2 border-slate-200"
+            >
+              <div class="flex justify-between items-start mb-6">
+                <h3 class="font-black text-slate-900">Books CSV</h3>
+                <span
+                  class="text-[9px] font-black bg-slate-100 px-2 py-1 rounded text-slate-500 uppercase"
+                  >Current:
+                  <span id="totalBooksCount" class="text-slate-900"
+                    >0</span
+                  ></span
+                >
+              </div>
+              <form id="booksCSVForm" class="space-y-4">
+                <div
+                  class="border-2 border-dashed border-slate-100 rounded-xl p-4 text-center hover:border-red-200 transition-colors"
+                >
+                  <input
+                    type="file"
+                    name="file"
+                    accept=".csv"
+                    class="text-xs font-medium text-slate-400 file:hidden"
+                    id="bookFile"
+                  />
+                  <label
+                    for="bookFile"
+                    class="cursor-pointer text-[10px] font-black text-red-600 uppercase"
+                    >Select File</label
+                  >
+                </div>
+                <button
+                  type="submit"
+                  class="w-full bg-slate-900 text-white font-black py-3 rounded-xl text-[10px] uppercase tracking-widest hover:bg-red-600 transition"
+                >
+                  Import Resources
+                </button>
+              </form>
+            </section>
+
+            <section
+              class="upload-card p-8 border-dashed border-2 border-slate-200"
+            >
+              <div class="flex justify-between items-start mb-6">
+                <h3 class="font-black text-slate-900">Students CSV</h3>
+                <span
+                  class="text-[9px] font-black bg-slate-100 px-2 py-1 rounded text-slate-500 uppercase"
+                  >Current:
+                  <span id="totalStudentsCount" class="text-slate-900"
+                    >0</span
+                  ></span
+                >
+              </div>
+              <form id="studentsCSVForm" class="space-y-4">
+                <div
+                  class="border-2 border-dashed border-slate-100 rounded-xl p-4 text-center hover:border-red-200 transition-colors"
+                >
+                  <input
+                    type="file"
+                    name="file"
+                    accept=".csv"
+                    class="text-xs font-medium text-slate-400 file:hidden"
+                    id="studentFile"
+                  />
+                  <label
+                    for="studentFile"
+                    class="cursor-pointer text-[10px] font-black text-red-600 uppercase"
+                    >Select File</label
+                  >
+                </div>
+                <button
+                  type="submit"
+                  class="w-full bg-slate-900 text-white font-black py-3 rounded-xl text-[10px] uppercase tracking-widest hover:bg-red-600 transition"
+                >
+                  Import Members
+                </button>
+              </form>
+            </section>
+          </div>
+
+          <div
+            class="p-6 bg-slate-50 rounded-2xl border border-slate-100 flex gap-4"
+          >
+            <i
+              data-lucide="info"
+              class="text-slate-400 w-5 h-5 flex-shrink-0"
+            ></i>
+            <p class="text-xs text-slate-400 leading-relaxed font-medium">
+              Ensure your CSV files use UTF-8 encoding. Required headers:
+              <code class="text-red-500">ref_no</code>,
+              <code class="text-red-500">title</code>,
+              <code class="text-red-500">roll_no</code>. Duplicate entries will
+              be ignored by the system.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script>
+      lucide.createIcons();
+
+      async function updateUploadStats() {
+        try {
+          const res = await fetch("/dashboard/stats");
+          const data = await res.json();
+          document.getElementById("totalBooksCount").textContent =
+            data.totalBooks.toLocaleString();
+          document.getElementById("totalStudentsCount").textContent =
+            data.totalStudents.toLocaleString();
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      const showProgress = (targetName) => {
+        const section = document.getElementById("progressSection");
+        section.classList.remove("hidden");
+        document.getElementById(
+          "uploadTarget"
+        ).textContent = `Syncing ${targetName}...`;
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += 5;
+          document.getElementById("progressBar").style.width = progress + "%";
+          document.getElementById("percentText").textContent = progress + "%";
+          if (progress >= 100) clearInterval(interval);
+        }, 50);
+      };
+
+      const apiPost = async (url, data, isFormData = false) => {
+        const options = {
+          method: "POST",
+          headers: isFormData ? {} : { "Content-Type": "application/json" },
+          body: isFormData ? data : JSON.stringify(data),
+        };
+        const res = await fetch(url, options);
+        return res.json();
+      };
+
+      document
+        .getElementById("singleBookForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const res = await apiPost(
+            "/upload/book",
+            Object.fromEntries(new FormData(e.target))
+          );
+          if (res.success) {
+            alert("Book Registered!");
+            e.target.reset();
+            updateUploadStats();
+          }
+        });
+
+      document
+        .getElementById("booksCSVForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          showProgress("Resource Database");
+          const res = await apiPost(
+            "/upload/books-csv",
+            new FormData(e.target),
+            true
+          );
+          setTimeout(() => {
+            alert("Batch Import Complete");
+            location.reload();
+          }, 1500);
+        });
+
+      document
+        .getElementById("singleStudentForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const res = await apiPost(
+            "/upload/student",
+            Object.fromEntries(new FormData(e.target))
+          );
+          if (res.success) {
+            alert("Student Enrolled!");
+            e.target.reset();
+            updateUploadStats();
+          }
+        });
+
+      document
+        .getElementById("studentsCSVForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          showProgress("Member Registry");
+          const res = await apiPost(
+            "/upload/students-csv",
+            new FormData(e.target),
+            true
+          );
+          setTimeout(() => {
+            alert("Batch Import Complete");
+            location.reload();
+          }, 1500);
+        });
+
+      updateUploadStats();
+    </script>
+  </body>
+</html>

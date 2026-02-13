@@ -1,0 +1,129 @@
+<%- include('head') %>
+<footer
+  class="bg-[#fcfcfd] text-slate-500 border-t border-slate-200 mt-auto shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.05)]"
+>
+  <div class="max-w-7xl mx-auto px-6 py-10">
+    <div class="flex flex-col lg:flex-row justify-between items-center gap-8">
+      <div class="text-center lg:text-left order-2 lg:order-1">
+        <div
+          class="flex items-center justify-center lg:justify-start gap-2 mb-3"
+        >
+          <div class="w-1.5 h-6 bg-red-600 rounded-full"></div>
+          <span
+            class="text-slate-900 font-black tracking-[0.15em] uppercase text-lg"
+          >
+            CQST <span class="text-slate-400 font-light">Library</span>
+          </span>
+        </div>
+        <p class="text-[11px] font-medium leading-relaxed text-slate-500">
+          &copy; <%= new Date().getFullYear() %> CodeQuotient School of
+          Technology
+          <br />
+          <span
+            class="text-slate-400 uppercase text-[9px] tracking-widest font-bold"
+          >
+            Authorized Personnel Access Only • v2.4.0-Stable
+          </span>
+        </p>
+      </div>
+
+      <nav
+        class="order-1 lg:order-2 flex flex-wrap justify-center gap-x-8 gap-y-3 text-[10px] font-black uppercase tracking-[0.2em]"
+      >
+        <a
+          href="/dashboard"
+          class="text-slate-400 hover:text-red-600 transition-all duration-300"
+          >Dashboard</a
+        >
+        <a
+          href="/books"
+          class="text-slate-400 hover:text-red-600 transition-all duration-300"
+          >Inventory</a
+        >
+        <a
+          href="/students"
+          class="text-slate-400 hover:text-red-600 transition-all duration-300"
+          >Students</a
+        >
+        <a
+          href="/borrow"
+          class="text-slate-400 hover:text-red-600 transition-all duration-300"
+          >Records</a
+        >
+      </nav>
+
+      <div class="order-3 flex flex-col items-center lg:items-end gap-4">
+        <div class="flex items-center gap-5 text-slate-300">
+          <a
+            href="https://www.facebook.com/CodeQuotientSchoolOfTechnology/"
+            class="hover:text-red-600 transition-all transform hover:-translate-y-1"
+          >
+            <i data-lucide="facebook" class="w-4 h-4"></i>
+          </a>
+          <a
+            href="https://www.linkedin.com/school/codequotient-school-of-technology/"
+            class="hover:text-red-600 transition-all transform hover:-translate-y-1"
+          >
+            <i data-lucide="linkedin" class="w-4 h-4"></i>
+          </a>
+          <a
+            href="https://twitter.com/CodeQuotient"
+            class="hover:text-red-600 transition-all transform hover:-translate-y-1"
+          >
+            <i data-lucide="twitter" class="w-4 h-4"></i>
+          </a>
+          <a
+            href="https://www.instagram.com/codequotientschooloftechnology/"
+            class="hover:text-red-600 transition-all transform hover:-translate-y-1"
+          >
+            <i data-lucide="instagram" class="w-4 h-4"></i>
+          </a>
+        </div>
+
+        <div
+          class="flex items-center gap-3 bg-slate-100 px-4 py-1.5 rounded-full border border-slate-200"
+        >
+          <div class="relative flex h-2 w-2">
+            <span
+              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-20"
+            ></span>
+            <span
+              class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"
+            ></span>
+          </div>
+          <span
+            class="text-[9px] font-black uppercase tracking-widest text-slate-500"
+            >System Live</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="mt-10 pt-6 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4"
+    >
+      <p
+        class="text-[9px] text-slate-400 uppercase tracking-[0.2em] font-medium"
+      >
+        Designed for
+        <span class="text-slate-900 font-black">Academic Excellence</span>
+      </p>
+      <p
+        class="text-[9px] text-slate-400 uppercase tracking-[0.2em] font-medium"
+      >
+        by
+        <span class="text-slate-900 font-black">Ashish Gartan</span>
+      </p>
+      <div
+        class="flex gap-6 text-[9px] text-slate-400 uppercase tracking-widest font-black"
+      >
+        <a href="#" class="hover:text-red-600 transition-colors"
+          >Privacy Policy</a
+        >
+        <a href="#" class="hover:text-red-600 transition-colors"
+          >Terms of Service</a
+        >
+      </div>
+    </div>
+  </div>
+</footer>

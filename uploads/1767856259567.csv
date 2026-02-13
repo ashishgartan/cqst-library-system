@@ -1,0 +1,6 @@
+ref_no,isbn,title,author,publish_year,page_count,genre,subject,description
+B001,978-1234567890,Computer Architecture,John Smith,2015,350,Engineering,Computer,Introduction to Computer Architecture
+B002,978-9876543210,Data Structures,Jane Doe,2018,400,Engineering,Computer,Comprehensive guide to Data Structures
+B003,978-1112223334,Operating Systems,Mark Allen,2020,500,Engineering,Computer,Learn OS concepts and design
+B004,978-5556667778,Networking Basics,Lisa Ray,2017,250,Engineering,Computer,Basic Networking concepts
+B005,978-9998887776,Database Systems,Tom Hanks,2019,450,Engineering,Computer,Database design and SQL

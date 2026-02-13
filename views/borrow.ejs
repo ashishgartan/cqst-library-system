@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Issue & Returns | CQST Library</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap");
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f8fafc;
+      }
+      .content-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .registry-table th {
+        padding: 14px 20px;
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        color: #64748b;
+        font-weight: 800;
+        text-transform: uppercase;
+        background: #f1f5f9;
+      }
+      .registry-table td {
+        padding: 14px 20px;
+        border-bottom: 1px solid #f1f5f9;
+      }
+      input,
+      select {
+        font-size: 13px !important;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+    </style>
+  </head>
+  <body class="text-slate-700 min-h-screen flex flex-col">
+    <%- include('partials/header') %>
+
+    <main class="flex-1 p-4 md:p-8">
+      <div class="max-w-7xl mx-auto space-y-8">
+        <div
+          class="flex items-center justify-between border-b border-slate-200 pb-6"
+        >
+          <div>
+            <h2
+              class="text-2xl font-black text-slate-900 flex items-center gap-3 tracking-tight"
+            >
+              <i data-lucide="book-copy" class="text-red-600 w-6 h-6"></i>
+              Issue & Returns
+            </h2>
+            <p
+              id="infoText"
+              class="text-[11px] text-slate-400 font-bold uppercase tracking-widest mt-1"
+            >
+              Transaction Portal
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="content-card rounded-[2.5rem] overflow-hidden shadow-xl border-none"
+        >
+          <div class="p-5 border-b border-slate-100 bg-slate-50/50">
+            <h3
+              class="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2"
+            >
+              <i data-lucide="plus-circle" class="w-4 h-4 text-red-500"></i>
+              New Transaction
+            </h3>
+          </div>
+
+          <div class="p-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+              <div class="lg:col-span-4 space-y-4">
+                <div
+                  id="studentCard"
+                  class="hidden p-5 rounded-2xl bg-white border-2 border-slate-100 shadow-sm"
+                >
+                  <span
+                    class="bg-red-50 text-red-600 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest"
+                    >Student Verified</span
+                  >
+                  <p
+                    id="sName"
+                    class="font-black text-slate-900 text-lg mt-3 leading-tight"
+                  ></p>
+                  <p
+                    id="sRoll"
+                    class="text-xs text-slate-500 font-mono mt-1"
+                  ></p>
+                  <p
+                    id="sStream"
+                    class="text-xs text-slate-400 mt-0.5 font-medium"
+                  ></p>
+                </div>
+
+                <div
+                  id="bookCard"
+                  class="hidden p-5 rounded-2xl bg-white border-2 border-slate-100 shadow-sm"
+                >
+                  <span
+                    class="bg-slate-900 text-white text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest"
+                    >Book Identified</span
+                  >
+                  <p
+                    id="bTitle"
+                    class="font-black text-slate-900 text-sm mt-3 leading-tight line-clamp-2"
+                  ></p>
+                  <p
+                    id="bAuthor"
+                    class="text-xs text-slate-500 italic mt-1"
+                  ></p>
+                  <div id="bStock" class="mt-3"></div>
+                </div>
+
+                <div
+                  id="statusHint"
+                  class="h-full min-h-[160px] rounded-3xl border-2 border-dashed border-slate-100 flex flex-col items-center justify-center text-center p-6 bg-slate-50/30"
+                >
+                  <i
+                    data-lucide="scan-text"
+                    class="w-8 h-8 mb-3 text-slate-300"
+                  ></i>
+                  <p
+                    class="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-relaxed"
+                  >
+                    Scan or enter credentials <br />
+                    to preview transaction
+                  </p>
+                </div>
+              </div>
+
+              <div class="lg:col-span-8">
+                <form id="borrowForm" class="space-y-8">
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="space-y-2">
+                      <label
+                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1"
+                        >Student Roll No</label
+                      >
+                      <input
+                        id="rollInput"
+                        name="roll_no"
+                        placeholder="Roll Number"
+                        required
+                        class="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:ring-4 focus:ring-red-500/5 outline-none transition-all"
+                      />
+                    </div>
+                    <div class="space-y-2">
+                      <label
+                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1"
+                        >Book Ref Code</label
+                      >
+                      <input
+                        id="refNoInput"
+                        name="ref_no"
+                        placeholder="Reference Code"
+                        required
+                        class="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:ring-4 focus:ring-red-500/5 outline-none transition-all"
+                      />
+                    </div>
+                    <div class="space-y-2">
+                      <label
+                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1"
+                        >Issue Date</label
+                      >
+                      <input
+                        type="date"
+                        id="borrowDate"
+                        name="borrow_date"
+                        required
+                        class="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 outline-none"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="flex flex-col md:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-100"
+                  >
+                    <p class="text-[11px] text-slate-400 font-medium">
+                      Please verify student and book details before issuing.
+                    </p>
+                    <button
+                      id="borrowBtn"
+                      type="submit"
+                      disabled
+                      class="w-full md:w-64 h-12 bg-slate-900 hover:bg-red-600 text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all disabled:opacity-10 active:scale-95 flex items-center justify-center gap-3 shadow-lg shadow-slate-200"
+                    >
+                      Complete Issue
+                      <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </form>
+                <div
+                  id="formMessage"
+                  class="mt-4 text-[11px] font-bold text-center rounded-xl transition-all"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="content-card rounded-[2.5rem] overflow-hidden border-none shadow-xl"
+        >
+          <div
+            class="p-6 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4"
+          >
+            <h3
+              class="text-sm font-black text-slate-900 flex items-center gap-3 tracking-widest uppercase"
+            >
+              <i data-lucide="clock" class="w-5 h-5 text-red-600"></i>
+              History & Active Loans
+            </h3>
+            <div class="relative w-full md:w-96">
+              <i
+                data-lucide="search"
+                class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
+              ></i>
+              <input
+                id="historySearch"
+                placeholder="Filter by name, roll, or book..."
+                class="w-full h-11 pl-11 pr-4 rounded-xl bg-slate-50 border border-slate-100 text-sm text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-red-500/10 transition-all"
+              />
+            </div>
+          </div>
+
+          <div class="overflow-x-auto no-scrollbar">
+            <table class="min-w-full text-left registry-table">
+              <thead>
+                <tr>
+                  <th>Borrower</th>
+                  <th>Book Details</th>
+                  <th class="text-center">Dates (Out/Due)</th>
+                  <th class="text-center">Actual Return</th>
+                  <th class="text-center">Status</th>
+                  <th class="text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="borrowHistory" class="text-[13px] bg-white"></tbody>
+            </table>
+          </div>
+
+          <div
+            class="p-6 bg-slate-50 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4"
+          >
+            <span
+              id="historyCount"
+              class="text-[11px] font-bold text-slate-400 uppercase tracking-widest"
+              >0 Records Found</span
+            >
+            <div id="paginationControls"></div>
+            <div class="flex items-center gap-3">
+              <select
+                id="limitSelector"
+                onchange="loadHistory(1)"
+                class="bg-white border border-slate-200 rounded-lg text-xs font-bold px-2 py-1 outline-none"
+              >
+                <option value="10">10 Rows</option>
+                <option value="25">25 Rows</option>
+                <option value="50">50 Rows</option>
+              </select>
+              <button
+                id="exportBorrowHistoriesBtn"
+                class="flex items-center gap-2 px-5 py-2 bg-white border border-slate-200 text-slate-500 hover:text-slate-900 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-sm"
+              >
+                <i data-lucide="download" class="w-4 h-4"></i> Backup
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script>
+      lucide.createIcons();
+
+      let studentValid = false,
+        bookValid = false;
+      let currentPage = 1;
+      const today = new Date().toISOString().split("T")[0];
+
+      const elements = {
+        roll: document.getElementById("rollInput"),
+        refNo: document.getElementById("refNoInput"),
+        btn: document.getElementById("borrowBtn"),
+        sCard: document.getElementById("studentCard"),
+        bCard: document.getElementById("bookCard"),
+        hint: document.getElementById("statusHint"),
+        tbody: document.getElementById("borrowHistory"),
+        bDate: document.getElementById("borrowDate"),
+        exportBtn: document.getElementById("exportBorrowHistoriesBtn"),
+        historySearch: document.getElementById("historySearch"),
+        limitSelector: document.getElementById("limitSelector"),
+      };
+
+      elements.bDate.value = today;
+
+      const getDynamicQuery = (page = 1) => {
+        const params = new URLSearchParams();
+        params.append("page", page);
+        params.append("limit", elements.limitSelector.value);
+        params.append("q", elements.historySearch.value.trim());
+        return params.toString();
+      };
+
+      const toggleBtn = () => {
+        elements.btn.disabled = !(studentValid && bookValid);
+      };
+
+      function renderTable(data) {
+        const histories = data.histories || [];
+        if (histories.length === 0) {
+          elements.tbody.innerHTML = `<tr><td colspan="6" class="py-20 text-center text-slate-400 italic font-medium uppercase text-[11px] tracking-widest">No transaction history found</td></tr>`;
+          return;
+        }
+
+        elements.tbody.innerHTML = histories
+          .map(
+            (h) => `
+          <tr class="hover:bg-slate-50/50 transition-colors group">
+            <td class="px-6 py-5">
+              <p class="text-slate-900 font-bold">${
+                h.borrowed_by?.name || "Unknown"
+              }</p>
+              <p class="text-[11px] text-slate-500 font-mono uppercase mt-0.5">${
+                h.borrowed_by?.roll_no || "N/A"
+              }</p>
+            </td>
+            <td class="px-6 py-5">
+              <p class="text-slate-700 font-bold line-clamp-1">${
+                h.borrowed_book?.title || "Unknown Book"
+              }</p>
+              <p class="text-[11px] text-slate-400 font-mono mt-0.5">REF: ${
+                h.borrowed_book?.ref_no || "N/A"
+              }</p>
+            </td>
+            <td class="px-6 py-5 text-center">
+              <div class="flex flex-col text-[11px] font-bold">
+                <span class="text-slate-600">${new Date(
+                  h.borrow_date
+                ).toLocaleDateString()}</span>
+                <span class="text-red-400 mt-1">${new Date(
+                  h.return_date
+                ).toLocaleDateString()}</span>
+              </div>
+            </td>
+            <td class="px-6 py-5 text-center font-mono text-[11px]">
+              ${
+                h.actual_return_date
+                  ? `<span class="text-green-600 font-bold">${new Date(
+                      h.actual_return_date
+                    ).toLocaleDateString()}</span>`
+                  : '<span class="text-slate-300 font-bold">PENDING</span>'
+              }
+            </td>
+            <td class="px-6 py-5 text-center">
+              <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                h.book_returned
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-50 text-red-600"
+              }">${h.book_returned ? "Returned" : "Active"}</span>
+            </td>
+            <td class="px-6 py-5 text-right">
+              ${
+                h.book_returned
+                  ? `<i data-lucide="check-circle-2" class="w-5 h-5 text-green-500 inline-block"></i>`
+                  : `<a href="/borrow/return-book/${h._id}" class="inline-block bg-slate-900 hover:bg-red-600 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-sm">Return</a>`
+              }
+            </td>
+          </tr>
+        `
+          )
+          .join("");
+
+        document.getElementById("historyCount").textContent = `${
+          data.totalResults || 0
+        } Records Found`;
+        renderPagination(data.totalPages, data.currentPage);
+        lucide.createIcons();
+      }
+
+      function renderPagination(totalPages, currentPage) {
+        const container = document.getElementById("paginationControls");
+        if (!container || totalPages <= 1) {
+          container.innerHTML = "";
+          return;
+        }
+
+        container.innerHTML = `
+          <div class="flex items-center gap-6 bg-white px-4 py-1.5 rounded-xl border border-slate-200 shadow-sm">
+            <button onclick="changePage(${currentPage - 1})" ${
+          currentPage === 1 ? "disabled" : ""
+        } class="text-slate-400 hover:text-red-600 disabled:opacity-30">
+              <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            </button>
+            <span class="text-[10px] font-bold text-slate-400">PAGE ${currentPage} / ${totalPages}</span>
+            <button onclick="changePage(${currentPage + 1})" ${
+          currentPage === totalPages ? "disabled" : ""
+        } class="text-slate-400 hover:text-red-600 disabled:opacity-30">
+              <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </button>
+          </div>`;
+        lucide.createIcons();
+      }
+
+      async function loadHistory(page = 1) {
+        currentPage = page;
+        try {
+          const res = await fetch(`/borrow/history?${getDynamicQuery(page)}`);
+          const data = await res.json();
+          renderTable(data);
+        } catch (err) {
+          console.error("History load failed", err);
+        }
+      }
+
+      function changePage(page) {
+        loadHistory(page);
+        window.scrollTo({ top: 500, behavior: "smooth" });
+      }
+
+      elements.historySearch.addEventListener("input", () => {
+        clearTimeout(window.searchTimeout);
+        window.searchTimeout = setTimeout(() => loadHistory(1), 500);
+      });
+
+      // Verification Logic
+      elements.roll.addEventListener("input", async () => {
+        const val = elements.roll.value.trim();
+        if (!val) {
+          elements.sCard.classList.add("hidden");
+          studentValid = false;
+          toggleBtn();
+          return;
+        }
+        try {
+          const res = await fetch(`/students/by-roll/${val}`);
+          const s = await res.json();
+          if (res.ok) {
+            document.getElementById("sName").textContent = s.name;
+            document.getElementById("sRoll").textContent = s.roll_no;
+            document.getElementById("sStream").textContent = s.stream;
+            elements.sCard.classList.remove("hidden");
+            elements.hint.classList.add("hidden");
+            studentValid = true;
+          } else {
+            studentValid = false;
+            elements.sCard.classList.add("hidden");
+          }
+        } catch {
+          studentValid = false;
+        }
+        toggleBtn();
+      });
+
+      elements.refNo.addEventListener("input", async () => {
+        const val = elements.refNo.value.trim();
+        if (!val) {
+          elements.bCard.classList.add("hidden");
+          bookValid = false;
+          toggleBtn();
+          return;
+        }
+        try {
+          const [bRes, sRes] = await Promise.all([
+            fetch(`/books/by-ref/${val}`),
+            fetch(`/borrow/status/${val}`),
+          ]);
+          const b = await bRes.json();
+          const s = await sRes.json();
+          if (bRes.ok) {
+            document.getElementById("bTitle").textContent = b.title;
+            document.getElementById("bAuthor").textContent = b.author;
+            const stockEl = document.getElementById("bStock");
+            if (s.isBorrowed) {
+              stockEl.innerHTML = `<span class="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-1 rounded">Currently Out</span>`;
+              bookValid = false;
+            } else {
+              stockEl.innerHTML = `<span class="bg-green-100 text-green-600 text-[10px] font-bold px-2 py-1 rounded">Available</span>`;
+              bookValid = true;
+            }
+            elements.bCard.classList.remove("hidden");
+            elements.hint.classList.add("hidden");
+          } else {
+            bookValid = false;
+            elements.bCard.classList.add("hidden");
+          }
+        } catch {
+          bookValid = false;
+        }
+        toggleBtn();
+      });
+
+      document
+        .getElementById("borrowForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const msg = document.getElementById("formMessage");
+          elements.btn.disabled = true;
+          try {
+            const res = await fetch("/borrow/borrow-by-student", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(Object.fromEntries(new FormData(e.target))),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message);
+            msg.className =
+              "mt-4 p-3 text-[11px] font-bold text-green-700 bg-green-50 border border-green-100 rounded-xl";
+            msg.textContent = "SUCCESS: Book issued successfully!";
+            e.target.reset();
+            elements.bDate.value = today;
+            studentValid = bookValid = false;
+            elements.sCard.classList.add("hidden");
+            elements.bCard.classList.add("hidden");
+            elements.hint.classList.remove("hidden");
+            loadHistory(1);
+          } catch (err) {
+            msg.className =
+              "mt-4 p-3 text-[11px] font-bold text-red-700 bg-red-50 border border-red-100 rounded-xl";
+            msg.textContent = err.message;
+          } finally {
+            toggleBtn();
+          }
+        });
+
+      elements.exportBtn.addEventListener("click", async () => {
+        try {
+          const res = await fetch(
+            `/export/borrow-history?${getDynamicQuery()}`
+          );
+          const blob = await res.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `Library_History_${
+            new Date().toISOString().split("T")[0]
+          }.csv`;
+          a.click();
+        } catch (err) {
+          alert("Export failed");
+        }
+      });
+
+      document.addEventListener("DOMContentLoaded", () => loadHistory(1));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Development in Progress | CQST Library</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap");
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f8fafc;
+      }
+      .construction-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+      }
+      @keyframes progress {
+        0% {
+          width: 0%;
+        }
+        100% {
+          width: 75%;
+        }
+      }
+      .animate-progress {
+        animation: progress 2s ease-out forwards;
+      }
+    </style>
+  </head>
+  <body class="text-slate-700 min-h-screen flex flex-col">
+    <%- include('partials/header') %>
+
+    <main class="flex-1 flex items-center justify-center p-6">
+      <div class="max-w-lg w-full">
+        <div
+          class="construction-card rounded-[3rem] p-10 md:p-16 text-center relative overflow-hidden"
+        >
+          <div
+            class="absolute inset-0 opacity-[0.03] pointer-events-none"
+            style="
+              background-image: radial-gradient(#000 1px, transparent 1px);
+              background-size: 20px 20px;
+            "
+          ></div>
+
+          <div class="relative">
+            <div
+              class="w-20 h-20 bg-red-50 text-red-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-sm"
+            >
+              <i data-lucide="construction" class="w-10 h-10"></i>
+            </div>
+
+            <span
+              class="text-[10px] font-black text-red-600 uppercase tracking-[0.3em] bg-red-50 px-4 py-1.5 rounded-full"
+            >
+              Module Development
+            </span>
+
+            <h1
+              class="text-4xl font-black text-slate-900 mt-6 mb-4 tracking-tight"
+            >
+              Coming Soon
+            </h1>
+
+            <p
+              class="text-slate-500 text-sm font-medium leading-relaxed max-w-xs mx-auto mb-10"
+            >
+              We are currently optimizing this section of the CQST Digital
+              Library. Expect a seamless experience shortly.
+            </p>
+
+            <div class="space-y-3 mb-10">
+              <div
+                class="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400 px-1"
+              >
+                <span>Alpha Testing</span>
+                <span>75% Complete</span>
+              </div>
+              <div class="w-full bg-slate-100 rounded-full h-3 p-1">
+                <div
+                  class="bg-slate-900 h-1 rounded-full animate-progress"
+                ></div>
+              </div>
+            </div>
+
+            <div
+              class="flex flex-col sm:flex-row justify-center items-center gap-4"
+            >
+              <a
+                href="/dashboard"
+                class="w-full sm:w-auto px-8 py-3 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-red-600 transition-all shadow-xl shadow-slate-200"
+              >
+                Return Home
+              </a>
+              <button
+                class="w-full sm:w-auto px-8 py-3 border border-slate-200 text-slate-400 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-slate-50 transition-all"
+              >
+                Report Issue
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <p
+          class="text-center mt-8 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]"
+        >
+          CQST Library Systems &copy; 2026
+        </p>
+      </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

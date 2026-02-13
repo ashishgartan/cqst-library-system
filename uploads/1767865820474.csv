@@ -1,0 +1,51 @@
+ref_no,isbn,title,author,publish_year,page_count,genre,subject,description
+B001,978-1234567890,Computer Architecture,John Smith,2015,350,Engineering,Computer,Introduction to Computer Architecture
+B002,978-9876543210,Data Structures,Jane Doe,2018,400,Engineering,Computer,Comprehensive guide to Data Structures
+B003,978-1112223334,Operating Systems,Mark Allen,2020,500,Engineering,Computer,Learn OS concepts and design
+B004,978-5556667778,Networking Basics,Lisa Ray,2017,250,Engineering,Computer,Basic Networking concepts
+B005,978-9998887776,Database Systems,Tom Hanks,2019,450,Engineering,Computer,Database design and SQL
+B006,978-0001112223,Machine Learning Basics,Andrew Ng,2021,420,Engineering,AI,Introduction to Machine Learning
+B007,978-0001112224,Artificial Intelligence,Stuart Russell,2020,480,Engineering,AI,Foundations of Artificial Intelligence
+B008,978-0001112225,Deep Learning,Ian Goodfellow,2022,550,Engineering,AI,Deep learning concepts and practice
+B009,978-0001112226,Python Programming,Guido Rossum,2016,300,Engineering,Programming,Learn Python from basics
+B010,978-0001112227,Java Programming,James Gosling,2017,340,Engineering,Programming,Java programming fundamentals
+B011,978-0001112228,C Programming,Dennis Ritchie,2014,280,Engineering,Programming,Learn C programming
+B012,978-0001112229,C++ Programming,Bjarne Stroustrup,2018,360,Engineering,Programming,Modern C++ concepts
+B013,978-0001112230,Web Development,Chris Coyier,2019,390,Engineering,Web,HTML CSS and JavaScript
+B014,978-0001112231,React in Action,Mark Tielens,2021,410,Engineering,Web,React framework explained
+B015,978-0001112232,Node.js Guide,Ryan Dahl,2020,380,Engineering,Web,Backend with Node.js
+B016,978-0001112233,Cloud Computing,Rajkumar Buyya,2019,460,Engineering,Cloud,Cloud architecture and services
+B017,978-0001112234,AWS Essentials,Jeff Barr,2021,350,Engineering,Cloud,AWS cloud fundamentals
+B018,978-0001112235,Docker & Kubernetes,Kelsey Hightower,2022,420,Engineering,Cloud,Container orchestration
+B019,978-0001112236,Cyber Security Basics,Bruce Schneier,2018,330,Engineering,Security,Security principles and practices
+B020,978-0001112237,Cryptography,Whitfield Diffie,2017,360,Engineering,Security,Cryptographic techniques
+B021,978-0001112238,Ethical Hacking,Kevin Mitnick,2020,390,Engineering,Security,Hacking and defense methods
+B022,978-0001112239,Software Engineering,Ian Sommerville,2016,500,Engineering,Software,Software development lifecycle
+B023,978-0001112240,Agile Methodologies,Kent Beck,2019,280,Engineering,Software,Agile development practices
+B024,978-0001112241,DevOps Handbook,Gene Kim,2021,450,Engineering,Software,DevOps culture and tools
+B025,978-0001112242,Big Data Analytics,Victor Mayer,2020,470,Engineering,Data,Big data processing and tools
+B026,978-0001112243,Hadoop Guide,Tom White,2018,420,Engineering,Data,Hadoop ecosystem explained
+B027,978-0001112244,Data Mining,Jiawei Han,2019,460,Engineering,Data,Data mining concepts
+B028,978-0001112245,Statistics for Engineers,Montgomery,2017,350,Engineering,Math,Statistics fundamentals
+B029,978-0001112246,Discrete Mathematics,Kenneth Rosen,2016,500,Engineering,Math,Discrete math for CS
+B030,978-0001112247,Linear Algebra,David Lay,2015,480,Engineering,Math,Linear algebra concepts
+B031,978-0001112248,Compiler Design,Alfred Aho,2014,520,Engineering,Computer,Compiler construction
+B032,978-0001112249,Computer Graphics,Donald Hearn,2018,450,Engineering,Computer,Graphics algorithms and design
+B033,978-0001112250,Human Computer Interaction,Alan Dix,2019,400,Engineering,Computer,HCI principles
+B034,978-0001112251,Mobile App Development,Paul Deitel,2020,360,Engineering,Mobile,Android and iOS apps
+B035,978-0001112252,Android Programming,Google Dev Team,2021,340,Engineering,Mobile,Build Android applications
+B036,978-0001112253,iOS Development,Apple Inc,2022,330,Engineering,Mobile,iOS app development
+B037,978-0001112254,Game Development,Unity Team,2020,410,Engineering,Game,Game development basics
+B038,978-0001112255,Virtual Reality,Jeremy Bailenson,2019,370,Engineering,VR,VR systems and design
+B039,978-0001112256,Augmented Reality,Ronald Azuma,2021,350,Engineering,VR,AR technology explained
+B040,978-0001112257,Blockchain Basics,Satoshi Nakamoto,2018,300,Engineering,Blockchain,Blockchain fundamentals
+B041,978-0001112258,Smart Contracts,Gavin Wood,2020,320,Engineering,Blockchain,Smart contract development
+B042,978-0001112259,Internet of Things,Adrian McEwen,2019,380,Engineering,IoT,IoT systems and applications
+B043,978-0001112260,Embedded Systems,Jonathan Valvano,2017,420,Engineering,IoT,Embedded system design
+B044,978-0001112261,Robotics,John Craig,2016,480,Engineering,Robotics,Introduction to robotics
+B045,978-0001112262,Control Systems,Norman Nise,2015,500,Engineering,Robotics,Control system principles
+B046,978-0001112263,Digital Signal Processing,Oppenheim,2014,520,Engineering,Electronics,DSP fundamentals
+B047,978-0001112264,Microprocessors,Barry Brey,2018,460,Engineering,Electronics,Microprocessor architecture
+B048,978-0001112265,VLSI Design,Weste & Harris,2019,490,Engineering,Electronics,VLSI circuits and systems
+B049,978-0001112266,Power Electronics,Ned Mohan,2017,470,Engineering,Electronics,Power electronic systems
+B050,978-0001112267,Renewable Energy,Godfrey Boyle,2020,400,Engineering,Energy,Renewable energy technologies

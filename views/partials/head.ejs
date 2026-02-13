@@ -1,0 +1,23 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .nav-item {
+      @apply flex items-center gap-2 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 rounded-xl transition-all duration-200 hover:bg-white/5 dark:hover:bg-black hover:text-white dark:hover:text-black;
+    }
+    .nav-active {
+      @apply bg-red-600/10 text-red-600 shadow-[inset_0_0_10px_rgba(220,38,38,0.1)];
+    }
+    .mobile-nav-item {
+      @apply flex items-center gap-3 p-3 text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 bg-white/[0.02] dark:bg-gray-50 rounded-xl;
+    }
+    .nav-item svg,
+    .mobile-nav-item svg {
+      width: 14px;
+      height: 14px;
+    }
+  </style>
+</head>

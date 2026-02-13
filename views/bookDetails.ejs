@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Book | <%= book.title %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap");
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f8fafc;
+      }
+      .form-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05),
+          0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      }
+      input,
+      textarea,
+      select {
+        font-size: 14px !important;
+      }
+    </style>
+  </head>
+
+  <body class="text-slate-700 min-h-screen flex flex-col">
+    <%- include('partials/header') %>
+
+    <main class="flex-1 p-4 md:p-8">
+      <div class="max-w-4xl mx-auto">
+        <a
+          href="/books"
+          class="group text-[11px] text-slate-400 hover:text-slate-900 flex items-center gap-2 mb-6 transition-all font-bold uppercase tracking-widest"
+        >
+          <i
+            data-lucide="arrow-left"
+            class="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1"
+          ></i>
+          Back to Inventory
+        </a>
+
+        <div class="form-card rounded-3xl overflow-hidden">
+          <div
+            class="p-8 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row items-center gap-8"
+          >
+            <div
+              class="relative group cursor-pointer"
+              onclick="document.getElementById('coverInput').click()"
+            >
+              <img
+                id="coverPreview"
+                src="/<%= book.front_page %>"
+                alt="Cover"
+                class="w-24 h-32 object-cover rounded-xl border-2 border-white shadow-md group-hover:brightness-75 transition duration-300"
+                onerror="this.src='https://placehold.co/400x600?text=No+Cover'"
+              />
+              <div
+                class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
+              >
+                <i data-lucide="camera" class="text-white w-6 h-6"></i>
+              </div>
+              <input
+                type="file"
+                id="coverInput"
+                class="hidden"
+                accept="image/*"
+                onchange="previewImage(event)"
+              />
+            </div>
+
+            <div class="flex-1 text-center sm:text-left">
+              <div
+                class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-2"
+              >
+                <span
+                  class="px-2.5 py-1 bg-slate-200 text-slate-700 text-[10px] font-bold uppercase tracking-wider rounded-lg"
+                >
+                  Ref: <%= book.ref_no %>
+                </span>
+                <div
+                  id="statusBadge"
+                  class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider <%= book.isActive ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500' %>"
+                >
+                  <div
+                    class="w-1.5 h-1.5 rounded-full <%= book.isActive ? 'bg-green-500' : 'bg-slate-400' %>"
+                  ></div>
+                  <%= book.isActive ? 'IN STOCK' : 'UNAVAILABLE' %>
+                </div>
+              </div>
+              <h1
+                class="text-2xl font-black text-slate-900 tracking-tight mb-1"
+              >
+                <%= book.title %>
+              </h1>
+              <p class="text-sm text-slate-500 font-medium">
+                Written by
+                <span class="text-slate-900"><%= book.author %></span>
+              </p>
+            </div>
+          </div>
+
+          <form id="editForm" class="p-8 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="space-y-4">
+                <div>
+                  <label
+                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1"
+                    >Book Title</label
+                  >
+                  <input
+                    name="title"
+                    type="text"
+                    value="<%= book.title %>"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus:border-red-500 focus:bg-white outline-none transition-all text-slate-900 shadow-sm"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1"
+                    >Author Name</label
+                  >
+                  <input
+                    name="author"
+                    type="text"
+                    value="<%= book.author %>"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus:border-red-500 focus:bg-white outline-none transition-all text-slate-900 shadow-sm"
+                  />
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <div>
+                  <label
+                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1"
+                    >ISBN Number</label
+                  >
+                  <input
+                    name="isbn"
+                    type="text"
+                    value="<%= book.isbn %>"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus:border-red-500 focus:bg-white outline-none transition-all text-slate-900 shadow-sm"
+                  />
+                </div>
+                <div>
+                  <label
+                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1"
+                    >Subject / Category</label
+                  >
+                  <input
+                    name="subject"
+                    type="text"
+                    value="<%= book.subject %>"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus:border-red-500 focus:bg-white outline-none transition-all text-slate-900 shadow-sm"
+                  />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-4">
+                  <div>
+                    <label
+                      class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1"
+                      >Pub. Year</label
+                    >
+                    <input
+                      name="publish_year"
+                      type="number"
+                      value="<%= book.publish_year %>"
+                      class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus:border-red-500 outline-none transition-all text-slate-900"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1"
+                      >Pages</label
+                    >
+                    <input
+                      name="page_count"
+                      type="number"
+                      value="<%= book.page_count %>"
+                      class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus:border-red-500 outline-none transition-all text-slate-900"
+                    />
+                  </div>
+                </div>
+                <div class="flex flex-col">
+                  <label
+                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1"
+                    >Genre</label
+                  >
+                  <input
+                    name="genre"
+                    type="text"
+                    value="<%= book.genre %>"
+                    class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 focus:border-red-500 outline-none transition-all text-slate-900"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label
+                class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1"
+                >Book Description</label
+              >
+              <textarea
+                name="description"
+                rows="4"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:border-red-500 focus:bg-white outline-none transition-all text-slate-600 leading-relaxed"
+              >
+<%= book.description %></textarea
+              >
+            </div>
+
+            <div
+              class="flex items-center justify-between p-5 bg-slate-50 rounded-2xl border border-slate-100"
+            >
+              <div class="flex items-center gap-3">
+                <i data-lucide="info" class="w-5 h-5 text-slate-400"></i>
+                <p
+                  class="text-xs font-bold text-slate-600 uppercase tracking-tight"
+                >
+                  Show in public catalog
+                </p>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="statusToggle" class="sr-only peer"
+                <%= book.isActive ? 'checked' : '' %>>
+                <div
+                  class="w-11 h-6 bg-slate-300 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"
+                ></div>
+              </label>
+            </div>
+
+            <div
+              class="flex items-center justify-between pt-6 border-t border-slate-100"
+            >
+              <button
+                type="button"
+                onclick="confirmDelete('<%= book._id %>')"
+                class="text-slate-400 hover:text-red-600 flex items-center gap-1.5 font-bold text-[10px] uppercase tracking-widest transition-all"
+              >
+                <i data-lucide="trash-2" class="w-4 h-4"></i> Delete Book
+              </button>
+              <button
+                type="submit"
+                id="submitBtn"
+                class="bg-slate-900 hover:bg-red-600 text-white px-8 py-3 rounded-xl font-black text-[11px] uppercase tracking-widest transition-all active:scale-95 flex items-center gap-2 shadow-lg shadow-slate-200"
+              >
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <div
+      id="customAlert"
+      class="fixed top-6 right-6 z-[100] transform translate-x-[150%] transition-transform duration-500 ease-out"
+    >
+      <div
+        class="bg-white border border-slate-200 rounded-2xl p-4 shadow-2xl flex items-center gap-4 min-w-[300px]"
+      >
+        <div
+          id="alertIconContainer"
+          class="w-10 h-10 rounded-xl flex items-center justify-center"
+        ></div>
+        <div>
+          <h5
+            id="alertTitle"
+            class="text-[10px] font-black uppercase tracking-wider text-slate-900"
+          ></h5>
+          <p id="alertMessage" class="text-xs text-slate-500 font-medium"></p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      lucide.createIcons();
+
+      function showAlert(message, type = "success") {
+        const alertBox = document.getElementById("customAlert");
+        const iconBox = document.getElementById("alertIconContainer");
+        const title = document.getElementById("alertTitle");
+        const msg = document.getElementById("alertMessage");
+
+        if (type === "error") {
+          iconBox.className =
+            "w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center";
+          iconBox.innerHTML =
+            '<i data-lucide="alert-circle" class="w-5 h-5"></i>';
+          title.innerText = "ERROR";
+        } else {
+          iconBox.className =
+            "w-10 h-10 rounded-xl bg-green-50 text-green-600 flex items-center justify-center";
+          iconBox.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i>';
+          title.innerText = "SUCCESS";
+        }
+
+        msg.innerText = message;
+        lucide.createIcons();
+        alertBox.classList.remove("translate-x-[150%]");
+        setTimeout(() => alertBox.classList.add("translate-x-[150%]"), 3000);
+      }
+
+      let selectedFile = null;
+      function previewImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+          selectedFile = file;
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            document.getElementById("coverPreview").src = e.target.result;
+            showAlert("Cover preview updated.");
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+
+      document
+        .getElementById("editForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const btn = document.getElementById("submitBtn");
+          const originalHTML = btn.innerHTML;
+          btn.disabled = true;
+          btn.innerHTML =
+            '<span class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span>';
+
+          const formData = new FormData(e.target);
+          formData.append("ref_no", "<%= book.ref_no %>");
+          formData.append(
+            "isActive",
+            document.getElementById("statusToggle").checked
+          );
+          if (selectedFile) formData.append("front_page", selectedFile);
+
+          try {
+            const endpoint = selectedFile
+              ? "/upload/upload-book-cover/<%= book._id %>"
+              : "/books/<%= book._id %>";
+            const method = selectedFile ? "POST" : "PUT";
+
+            const res = await fetch(endpoint, { method, body: formData });
+
+            if (res.ok) {
+              showAlert("Book details updated.");
+              setTimeout(() => location.reload(), 1200);
+            } else {
+              const result = await res.json();
+              showAlert(result.error || "Failed to update.", "error");
+              btn.disabled = false;
+              btn.innerHTML = originalHTML;
+            }
+          } catch (err) {
+            showAlert("Connection lost.", "error");
+            btn.disabled = false;
+            btn.innerHTML = originalHTML;
+          }
+        });
+
+      async function confirmDelete(id) {
+        if (
+          confirm(
+            "Are you sure you want to delete this book? This cannot be undone."
+          )
+        ) {
+          try {
+            const res = await fetch(`/books/${id}`, { method: "DELETE" });
+            if (res.ok) {
+              showAlert("Book removed.");
+              setTimeout(() => (window.location.href = "/books"), 1000);
+            }
+          } catch (err) {
+            showAlert("Delete failed.", "error");
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

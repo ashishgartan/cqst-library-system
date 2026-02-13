@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Inventory | CQST Library</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap");
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f8fafc;
+      }
+      /* Clean white cards with soft borders */
+      .content-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      /* Professional table styling */
+      .inventory-table th {
+        padding: 16px 24px;
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        color: #64748b;
+        font-weight: 800;
+        text-transform: uppercase;
+        background: #f1f5f9;
+      }
+      .inventory-table td {
+        padding: 16px 24px;
+        border-bottom: 1px solid #f1f5f9;
+      }
+      select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1rem;
+      }
+    </style>
+  </head>
+  <body class="text-slate-700 min-h-screen flex flex-col">
+    <%- include('partials/header') %>
+
+    <main class="flex-1 p-4 md:p-8">
+      <div class="max-w-7xl mx-auto space-y-6">
+        <div
+          class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+        >
+          <div>
+            <h2
+              class="text-2xl font-black text-slate-900 flex items-center gap-2 tracking-tight"
+            >
+              <span class="w-1.5 h-8 bg-red-600 rounded-full"></span>
+              Book Inventory
+            </h2>
+            <div class="flex items-center gap-3 mt-1 ml-4">
+              <span
+                id="recordCount"
+                class="text-[10px] bg-slate-100 text-slate-600 px-3 py-1 rounded-full font-bold border border-slate-200"
+              >
+                0 Books Found
+              </span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <% if (user && user.role === 'admin') { %>
+            <button
+              id="exportBooksBtn"
+              class="px-5 py-2.5 bg-white border border-slate-200 rounded-xl text-[11px] font-bold text-slate-600 hover:bg-slate-50 transition-all uppercase tracking-wider flex items-center gap-2 shadow-sm"
+            >
+              <i data-lucide="download" class="w-4 h-4"></i> Download CSV
+            </button>
+            <a
+              href="/upload"
+              class="bg-slate-900 hover:bg-red-600 text-white px-6 py-2.5 rounded-xl font-bold text-[11px] uppercase tracking-wider transition-all flex items-center gap-2 shadow-lg shadow-slate-200"
+            >
+              <i data-lucide="plus" class="w-4 h-4"></i> Add New Book
+            </a>
+            <% } %>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+          <div
+            class="md:col-span-9 content-card p-2 rounded-2xl flex items-center"
+          >
+            <div class="relative flex-1 flex items-center">
+              <i
+                data-lucide="search"
+                class="absolute left-4 text-slate-400 w-5 h-5"
+              ></i>
+              <input
+                id="historySearch"
+                type="text"
+                placeholder="Search by book title, author, or reference ID..."
+                class="w-full pl-12 pr-12 py-3.5 rounded-xl bg-slate-50 border-none text-sm text-slate-900 focus:ring-2 focus:ring-red-500/20 outline-none transition-all placeholder:text-slate-400 font-medium"
+              />
+              <button
+                onclick="toggleAdvancedSearch()"
+                class="absolute right-2 p-2.5 hover:bg-slate-100 rounded-lg transition-colors group"
+                id="collapseBtn"
+              >
+                <i
+                  data-lucide="sliders-horizontal"
+                  id="collapseIcon"
+                  class="w-5 h-5 text-slate-400 group-hover:text-slate-900 transition-all"
+                ></i>
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="md:col-span-3 content-card p-2 rounded-2xl flex items-center px-4"
+          >
+            <span
+              class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mr-3"
+              >Show:</span
+            >
+            <select
+              id="limitSelector"
+              class="bg-transparent text-slate-900 text-xs font-bold outline-none cursor-pointer w-full"
+            >
+              <option value="10">10 Rows</option>
+              <option value="25">25 Rows</option>
+              <option value="50">50 Rows</option>
+            </select>
+          </div>
+        </div>
+
+        <div
+          id="advancedPanel"
+          class="hidden opacity-0 translate-y-[-10px] transition-all duration-300 ease-out"
+        >
+          <div
+            class="content-card p-8 rounded-[2rem] bg-slate-50/50 border-slate-200 shadow-xl"
+          >
+            <div
+              class="flex items-center gap-2 mb-6 border-b border-slate-200 pb-4"
+            >
+              <i data-lucide="filter" class="w-4 h-4 text-red-600"></i>
+              <h3
+                class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-900"
+              >
+                Filter Collections
+              </h3>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+              <div class="space-y-2">
+                <label
+                  class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1"
+                  >Availability</label
+                >
+                <select
+                  id="status-filter"
+                  class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-900 outline-none focus:border-red-500 font-bold shadow-sm"
+                >
+                  <option value="">Any Status</option>
+                  <option value="available">Available Now</option>
+                  <option value="borrowed">Currently Issued</option>
+                </select>
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1"
+                  >Subject</label
+                >
+                <select
+                  id="subject-filter"
+                  class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-900 outline-none focus:border-red-500 font-bold shadow-sm"
+                >
+                  <option value="">All Categories</option>
+                </select>
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1"
+                  >Genre</label
+                >
+                <input
+                  id="genre-filter"
+                  type="text"
+                  placeholder="e.g. History"
+                  class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-900 outline-none focus:border-red-500 font-bold placeholder:text-slate-300 shadow-sm"
+                />
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1"
+                  >Status</label
+                >
+                <select
+                  id="isActive-filter"
+                  class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-900 outline-none focus:border-red-500 font-bold shadow-sm"
+                >
+                  <option value="">All Records</option>
+                  <option value="true">Active in Catalog</option>
+                  <option value="false">Hidden/Archived</option>
+                </select>
+              </div>
+            </div>
+
+            <div
+              class="flex justify-end gap-4 mt-8 pt-6 border-t border-slate-200"
+            >
+              <button
+                onclick="resetFilters()"
+                class="text-[10px] font-bold text-slate-400 hover:text-red-600 uppercase tracking-widest transition-colors flex items-center gap-2"
+              >
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Reset All
+              </button>
+              <button
+                onclick="manuallyApplySearch()"
+                class="bg-red-600 hover:bg-red-700 text-white text-[10px] font-black uppercase tracking-widest px-8 py-3 rounded-xl transition-all shadow-lg shadow-red-100"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="content-card rounded-[2rem] overflow-hidden border-slate-200"
+        >
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-left inventory-table">
+              <thead>
+                <tr>
+                  <th>Book Details</th>
+                  <th>Category</th>
+                  <th>Ref ID</th>
+                  <th>Status</th>
+                  <th class="text-right">Manage</th>
+                </tr>
+              </thead>
+              <tbody id="bookList" class="bg-white"></tbody>
+            </table>
+          </div>
+
+          <div
+            class="p-6 bg-slate-50 border-t border-slate-100 flex justify-center"
+          >
+            <div id="paginationControls"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script>
+      lucide.createIcons();
+
+      let currentPage = 1;
+      const currentUserRole = "<%= user ? user.role : 'guest' %>";
+      const elements = {
+        tbody: document.getElementById("bookList"),
+        searchInput: document.getElementById("historySearch"),
+        limitSelector: document.getElementById("limitSelector"),
+        statusFilter: document.getElementById("status-filter"),
+        subjectFilter: document.getElementById("subject-filter"),
+        genreFilter: document.getElementById("genre-filter"),
+        activeFilter: document.getElementById("isActive-filter"),
+        recordCount: document.getElementById("recordCount"),
+        paginationControls: document.getElementById("paginationControls"),
+        exportBtn: document.getElementById("exportBooksBtn"),
+        advancedPanel: document.getElementById("advancedPanel"),
+        collapseIcon: document.getElementById("collapseIcon"),
+      };
+
+      function toggleAdvancedSearch() {
+        const isHidden = elements.advancedPanel.classList.contains("hidden");
+        if (isHidden) {
+          elements.advancedPanel.classList.remove("hidden");
+          setTimeout(() => {
+            elements.advancedPanel.classList.remove(
+              "opacity-0",
+              "translate-y-[-10px]"
+            );
+            elements.collapseIcon.classList.add("text-red-600");
+          }, 10);
+        } else {
+          elements.advancedPanel.classList.add(
+            "opacity-0",
+            "translate-y-[-10px]"
+          );
+          elements.collapseIcon.classList.remove("text-red-600");
+          setTimeout(() => elements.advancedPanel.classList.add("hidden"), 300);
+        }
+      }
+
+      const getDynamicQuery = (page = 1) => {
+        const filters = {
+          q: elements.searchInput.value.trim(),
+          limit: elements.limitSelector.value,
+          status: elements.statusFilter.value,
+          subject: elements.subjectFilter.value,
+          genre: elements.genreFilter.value.trim(),
+          isActive: elements.activeFilter.value,
+          page: page,
+        };
+        const params = new URLSearchParams();
+        Object.keys(filters).forEach((key) => {
+          if (filters[key] !== "") params.append(key, filters[key]);
+        });
+        return params.toString();
+      };
+
+      function renderBooks(data) {
+        const books = data.books || [];
+        elements.tbody.innerHTML = books.length
+          ? ""
+          : `<tr><td colspan="5" class="py-24 text-center text-slate-400 font-medium italic">No books found matching your search.</td></tr>`;
+
+        books.forEach((b) => {
+          const isAvailable = !b.isBorrowed;
+          elements.tbody.innerHTML += `
+          <tr class="hover:bg-slate-50/80 transition-colors group">
+            <td class="px-6 py-5">
+              <div class="flex items-center gap-4">
+                <img src="${
+                  b.front_page || "/default_front_page.png"
+                }" class="w-10 h-14 object-cover rounded shadow-sm border border-slate-100" onerror="this.src='/default_front_page.png'">
+                <div>
+                  <p class="text-slate-900 text-sm font-bold group-hover:text-red-600 transition truncate max-w-[200px]">${
+                    b.title
+                  }</p>
+                  <p class="text-[11px] text-slate-500 font-medium">${
+                    b.author
+                  }</p>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-[10px] font-bold uppercase rounded-md">
+                ${b.subject || "General"}
+              </span>
+            </td>
+            <td class="font-mono text-[12px] text-slate-400 font-bold">${
+              b.ref_no
+            }</td>
+            <td>
+              <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full ${
+                  isAvailable ? "bg-green-500" : "bg-amber-500"
+                }"></div>
+                <span class="text-[11px] font-bold ${
+                  isAvailable ? "text-green-700" : "text-amber-700"
+                }">
+                  ${isAvailable ? "Available" : "Issued"}
+                </span>
+              </div>
+            </td>
+            <td class="text-right">
+              <div class="flex items-center justify-end gap-2">
+                ${
+                  currentUserRole === "admin"
+                    ? `
+                  <a href="/borrow?ref=${
+                    b.ref_no
+                  }" class="p-2.5 bg-slate-100 hover:bg-red-600 text-slate-500 hover:text-white rounded-xl transition-all" title="Manage Issue">
+                    <i data-lucide="${
+                      isAvailable ? "arrow-up-right" : "rotate-ccw"
+                    }" class="w-4 h-4"></i>
+                  </a>
+                  <a href="/books/details/${
+                    b._id
+                  }" class="p-2.5 bg-slate-100 hover:bg-slate-900 text-slate-500 hover:text-white rounded-xl transition-all" title="Edit Details">
+                    <i data-lucide="settings-2" class="w-4 h-4"></i>
+                  </a>
+                `
+                    : `
+                  <button ${
+                    !isAvailable ? "disabled" : ""
+                  } class="px-4 py-2 bg-slate-100 ${
+                        isAvailable
+                          ? "hover:bg-red-600 hover:text-white text-slate-600"
+                          : "opacity-30 cursor-not-allowed text-slate-400"
+                      } rounded-lg text-[10px] font-bold uppercase transition-all">
+                    ${isAvailable ? "Request" : "In Use"}
+                  </button>
+                `
+                }
+              </div>
+            </td>
+          </tr>`;
+        });
+
+        elements.recordCount.textContent = `${
+          data.totalBooks || 0
+        } Books Found`;
+        renderPagination(data.totalPages, data.currentPage);
+        lucide.createIcons();
+      }
+
+      function renderPagination(totalPages, currentPage) {
+        const container = elements.paginationControls;
+        if (!container || totalPages <= 1) {
+          container.innerHTML = "";
+          return;
+        }
+
+        container.innerHTML = `
+          <div class="flex items-center gap-6 bg-white px-6 py-2 rounded-2xl border border-slate-200 shadow-sm">
+            <button onclick="changePage(${currentPage - 1})" ${
+          currentPage === 1 ? "disabled" : ""
+        } class="text-slate-400 hover:text-red-600 disabled:opacity-30 transition-all">
+              <i data-lucide="chevron-left" class="w-5 h-5"></i>
+            </button>
+            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+              Page <span class="text-slate-900">${currentPage}</span> / ${totalPages}
+            </div>
+            <button onclick="changePage(${currentPage + 1})" ${
+          currentPage === totalPages ? "disabled" : ""
+        } class="text-slate-400 hover:text-red-600 disabled:opacity-30 transition-all">
+              <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </button>
+          </div>`;
+        lucide.createIcons();
+      }
+
+      async function loadBooks(page = 1) {
+        currentPage = page;
+        elements.tbody.innerHTML = `<tr><td colspan="5" class="text-center py-24 text-xs font-bold text-slate-400 uppercase tracking-widest animate-pulse">Loading Inventory...</td></tr>`;
+        try {
+          const res = await fetch(`/books/paginated?${getDynamicQuery(page)}`);
+          const data = await res.json();
+          renderBooks(data);
+        } catch (err) {
+          elements.tbody.innerHTML = `<tr><td colspan="5" class="text-center py-24 text-red-500 text-xs font-bold">Failed to load data. Please refresh.</td></tr>`;
+        }
+      }
+
+      const searchFun = async () => {
+        loadBooks(1);
+      };
+      function manuallyApplySearch() {
+        searchFun();
+      }
+      function changePage(newPage) {
+        loadBooks(newPage);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function resetFilters() {
+        elements.searchInput.value = "";
+        elements.limitSelector.value = "10";
+        elements.statusFilter.value = "";
+        elements.subjectFilter.value = "";
+        elements.genreFilter.value = "";
+        elements.activeFilter.value = "";
+        loadBooks(1);
+      }
+
+      async function exportBooks() {
+        try {
+          elements.exportBtn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Preparing...`;
+          lucide.createIcons();
+          const response = await fetch(`/export/books?${getDynamicQuery()}`);
+          if (!response.ok) throw new Error("Export failed");
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `Library_Inventory_${
+            new Date().toISOString().split("T")[0]
+          }.csv`;
+          a.click();
+        } catch (err) {
+          alert(err.message);
+        } finally {
+          elements.exportBtn.innerHTML = `<i data-lucide="download" class="w-4 h-4"></i> Download CSV`;
+          lucide.createIcons();
+        }
+      }
+
+      elements.limitSelector.addEventListener("change", searchFun);
+      elements.searchInput.addEventListener("input", () => {
+        clearTimeout(window.searchTimeout);
+        window.searchTimeout = setTimeout(searchFun, 500);
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        loadBooks(1);
+        // Load subjects dynamically if endpoint exists
+        fetch("/books/subjects")
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              elements.subjectFilter.innerHTML =
+                '<option value="">All Categories</option>' +
+                data.subjects
+                  .map((s) => `<option value="${s}">${s}</option>`)
+                  .join("");
+            }
+          });
+      });
+    </script>
+  </body>
+</html>

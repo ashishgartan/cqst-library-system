@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= student.name %> | Management Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap");
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f8fafc;
+      }
+      .content-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .input-field {
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem;
+        padding: 0.75rem 1rem;
+        outline: none;
+        transition: all 0.2s;
+      }
+      .input-field:focus {
+        border-color: #ef4444;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.05);
+      }
+    </style>
+  </head>
+  <body class="text-slate-700 min-h-screen flex flex-col">
+    <%- include('partials/header') %>
+
+    <main class="flex-1 max-w-6xl mx-auto p-6 md:p-10 w-full space-y-8">
+      <div class="flex justify-between items-center">
+        <a
+          href="/students"
+          class="text-slate-400 hover:text-red-600 flex items-center gap-2 transition text-[10px] font-black uppercase tracking-widest"
+        >
+          <i data-lucide="chevron-left" class="w-4 h-4"></i> Back to Directory
+        </a>
+      </div>
+
+      <div class="content-card rounded-[2.5rem] overflow-hidden">
+        <div
+          class="p-8 md:p-10 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row items-center gap-8"
+        >
+          <div
+            class="relative group cursor-pointer"
+            onclick="document.getElementById('profileInput').click()"
+          >
+            <img
+              id="profilePreview"
+              src="/<%= student.profile_photo %>"
+              class="w-32 h-32 rounded-3xl object-cover border-4 border-white shadow-xl group-hover:scale-105 transition duration-300"
+              onerror="this.src='/default_profile_photo.png'"
+            />
+            <div
+              class="absolute inset-0 bg-slate-900/40 rounded-3xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-inner"
+            >
+              <i data-lucide="camera" class="text-white w-6 h-6"></i>
+            </div>
+            <input
+              type="file"
+              id="profileInput"
+              class="hidden"
+              accept="image/*"
+              onchange="previewImage(this)"
+            />
+          </div>
+
+          <div class="flex-1 text-center md:text-left">
+            <span
+              class="bg-red-50 text-red-600 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest"
+              >Student Profile</span
+            >
+            <h1 class="text-4xl font-black text-slate-900 mt-3 tracking-tight">
+              <%= student.name %>
+            </h1>
+            <p
+              class="text-slate-400 font-bold text-sm mt-1 uppercase tracking-tighter"
+            >
+              Roll No: <%= student.roll_no %>
+            </p>
+          </div>
+
+          <div
+            id="statusBadge"
+            class="px-6 py-3 rounded-2xl text-[10px] font-black tracking-[0.2em] shadow-sm <%= student.isActive ? 'bg-green-50 text-green-600 border border-green-100' : 'bg-slate-100 text-slate-400' %>"
+          >
+            <%= student.isActive ? 'ACCESS: ACTIVE' : 'ACCESS: REVOKED' %>
+          </div>
+        </div>
+
+        <form id="masterStudentForm" class="p-8 md:p-10 space-y-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-2">
+              <label
+                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1"
+                >Legal Full Name</label
+              >
+              <input
+                name="name"
+                type="text"
+                value="<%= student.name %>"
+                class="input-field w-full text-sm font-semibold"
+              />
+            </div>
+            <div class="space-y-2">
+              <label
+                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1"
+                >Institutional Email</label
+              >
+              <input
+                name="email"
+                type="email"
+                value="<%= student.email %>"
+                class="input-field w-full text-sm font-semibold"
+              />
+            </div>
+            <div class="space-y-2">
+              <label
+                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1"
+                >Academic Stream</label
+              >
+              <input
+                name="stream"
+                type="text"
+                value="<%= student.stream %>"
+                class="input-field w-full text-sm font-semibold"
+              />
+            </div>
+            <div class="space-y-2">
+              <label
+                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1"
+                >Contact Number</label
+              >
+              <input
+                name="phone"
+                type="text"
+                value="<%= student.phone %>"
+                class="input-field w-full text-sm font-semibold"
+              />
+            </div>
+          </div>
+
+          <div
+            class="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 flex items-center justify-between"
+          >
+            <div class="flex gap-4 items-center">
+              <div class="p-3 bg-white rounded-xl shadow-sm text-slate-400">
+                <i data-lucide="shield-check" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="font-black text-slate-900 text-sm">
+                  Library Privileges
+                </p>
+                <p class="text-[11px] text-slate-400 font-medium">
+                  Toggle access for book borrowing and resource allocation.
+                </p>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="isActive" class="sr-only peer" <%=
+              student.isActive ? 'checked' : '' %>>
+              <div
+                class="w-14 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-red-600 after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-[20px] after:w-[20px] after:transition-all shadow-inner"
+              ></div>
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            id="saveBtn"
+            class="w-full bg-slate-900 hover:bg-red-600 text-white font-black py-4 rounded-2xl transition shadow-xl shadow-slate-200 flex justify-center items-center gap-3 uppercase tracking-widest text-xs"
+          >
+            Save Changes
+          </button>
+        </form>
+      </div>
+
+      <div class="content-card rounded-[2.5rem] p-8 md:p-10 space-y-6">
+        <div
+          class="flex flex-col md:flex-row md:items-center justify-between gap-4"
+        >
+          <div>
+            <h3 class="text-xl font-black text-slate-900 tracking-tight">
+              Borrowing Records
+            </h3>
+            <p
+              id="historyCount"
+              class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1"
+            >
+              Initializing registry...
+            </p>
+          </div>
+          <div class="relative">
+            <i
+              data-lucide="search"
+              class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300"
+            ></i>
+            <input
+              id="historySearch"
+              placeholder="Filter history..."
+              class="w-full md:w-80 bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 py-3 text-sm focus:ring-4 focus:ring-red-500/5 outline-none"
+            />
+          </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-3xl border border-slate-100">
+          <table class="min-w-full text-sm text-left">
+            <thead
+              class="bg-slate-50 text-slate-400 text-[9px] font-black uppercase tracking-[0.2em]"
+            >
+              <tr>
+                <th class="px-6 py-4">Resource Info</th>
+                <th class="px-6 py-4 text-center">Period</th>
+                <th class="px-6 py-4 text-center">In-Date</th>
+                <th class="px-6 py-4 text-center">Custodian</th>
+                <th class="px-6 py-4 text-center">Status & Ledger</th>
+              </tr>
+            </thead>
+            <tbody id="borrowHistory" class="divide-y divide-slate-50"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script>
+      lucide.createIcons();
+      let selectedFile = null;
+      const studentRollNo = "<%= student.roll_no %>";
+
+      // 1. Image Preview
+      function previewImage(input) {
+        if (input.files && input.files[0]) {
+          selectedFile = input.files[0];
+          const reader = new FileReader();
+          reader.onload = (e) =>
+            (document.getElementById("profilePreview").src = e.target.result);
+          reader.readAsDataURL(selectedFile);
+        }
+      }
+
+      // 2. Integrated Master Form Submission
+      document
+        .getElementById("masterStudentForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const btn = document.getElementById("saveBtn");
+          btn.disabled = true;
+          btn.innerHTML =
+            '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Processing...';
+          lucide.createIcons();
+
+          const formData = new FormData(e.target);
+          formData.append(
+            "isActive",
+            document.getElementById("isActive").checked
+          );
+          if (selectedFile) formData.append("profile_photo", selectedFile);
+
+          try {
+            const res = await fetch(
+              "/upload/profile-photo/<%= student._id %>",
+              {
+                method: "POST",
+                body: formData,
+              }
+            );
+            if (res.ok) {
+              alert("Profile Synchronized Successfully!");
+              location.reload();
+            } else {
+              alert("Update Failed. Check server logs.");
+              btn.disabled = false;
+              btn.innerHTML = "Save Changes";
+            }
+          } catch (err) {
+            alert("Network Error.");
+            btn.disabled = false;
+            btn.innerHTML = "Save Changes";
+          }
+        });
+
+      // 3. History Fetching & Rendering
+      async function loadHistory(query = "") {
+        try {
+          const url = `/borrow/search?student_id=${encodeURIComponent(
+            studentRollNo
+          )}&q=${encodeURIComponent(query)}`;
+          const res = await fetch(url);
+          const data = await res.json();
+          if (data.success) renderTable(data.histories);
+        } catch (error) {
+          console.error("Failed to fetch history:", error);
+        }
+      }
+
+      function renderTable(histories) {
+        const tbody = document.getElementById("borrowHistory");
+        tbody.innerHTML = histories.length
+          ? ""
+          : '<tr><td colspan="5" class="py-20 text-center text-slate-300 italic font-medium">No history available</td></tr>';
+
+        histories.forEach((h) => {
+          const isReturned = h.book_returned;
+          tbody.innerHTML += `
+            <tr class="hover:bg-slate-50/50 transition-colors">
+              <td class="px-6 py-5">
+                <div class="flex flex-col">
+                  <span class="text-slate-900 font-black tracking-tight">${
+                    h.borrowed_book.title
+                  }</span>
+                  <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">REF: ${
+                    h.borrowed_book.ref_no
+                  }</span>
+                </div>
+              </td>
+              <td class="px-6 py-5 text-center">
+                <div class="flex flex-col text-[11px] font-bold">
+                  <span class="text-slate-600">${new Date(
+                    h.borrow_date
+                  ).toLocaleDateString()}</span>
+                  <span class="text-red-400 mt-1">${new Date(
+                    h.return_date
+                  ).toLocaleDateString()}</span>
+                </div>
+              </td>
+              <td class="px-6 py-5 text-center text-xs font-black text-slate-900">
+                ${
+                  h.actual_return_date
+                    ? new Date(h.actual_return_date).toLocaleDateString()
+                    : "—"
+                }
+              </td>
+              <td class="px-6 py-5 text-center">
+                <div class="text-[9px] font-black uppercase text-slate-400 flex flex-col gap-0.5">
+                  <span class="bg-slate-100 px-2 py-0.5 rounded-md">OUT: ${
+                    h.issued_by ? h.issued_by.name : "System"
+                  }</span>
+                  <span class="bg-slate-50 px-2 py-0.5 rounded-md">IN: ${
+                    h.received_by ? h.received_by.name : "Pending"
+                  }</span>
+                </div>
+              </td>
+              <td class="px-6 py-5">
+                <div class="flex flex-col items-center gap-2">
+                  <span class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
+                    isReturned
+                      ? "bg-green-50 text-green-600"
+                      : "bg-red-50 text-red-600"
+                  }">
+                    ${isReturned ? "Returned" : "Overdue"}
+                  </span>
+                  ${
+                    h.fine_imposed > 0
+                      ? `<div class="flex gap-2 text-[10px] font-black"><span class="text-red-500">₹${h.fine_imposed}</span><span class="text-green-500">₹${h.fine_paid}</span></div>`
+                      : ""
+                  }
+                </div>
+              </td>
+            </tr>`;
+        });
+        document.getElementById(
+          "historyCount"
+        ).textContent = `${histories.length} Records Retrieved`;
+        lucide.createIcons();
+      }
+
+      // Search with Debounce
+      let timer;
+      document
+        .getElementById("historySearch")
+        .addEventListener("input", (e) => {
+          clearTimeout(timer);
+          timer = setTimeout(() => loadHistory(e.target.value.trim()), 400);
+        });
+
+      loadHistory();
+    </script>
+  </body>
+</html>

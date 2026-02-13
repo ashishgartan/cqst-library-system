@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Return Settlement | CQST Library</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap");
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f8fafc;
+      }
+      .content-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+      .fine-display {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      }
+    </style>
+  </head>
+  <body class="text-slate-700 min-h-screen flex flex-col">
+    <%- include('partials/header') %>
+
+    <div
+      id="settlementData"
+      data-history-id="<%= history._id %>"
+      data-original-fine="<%= calculatedFine %>"
+    ></div>
+
+    <main class="flex-1 max-w-6xl mx-auto p-6 md:p-10 w-full space-y-8">
+      <div
+        class="flex items-center justify-between border-b border-slate-200 pb-6"
+      >
+        <div>
+          <h2
+            class="text-2xl font-black text-slate-900 flex items-center gap-3 tracking-tight"
+          >
+            <i data-lucide="receipt" class="text-red-600 w-6 h-6"></i>
+            Return Settlement
+          </h2>
+          <p
+            class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em] mt-1"
+          >
+            Transaction Finalization
+          </p>
+        </div>
+        <a
+          href="/borrow"
+          class="bg-white border border-slate-200 text-slate-400 hover:text-red-600 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 shadow-sm"
+        >
+          <i data-lucide="x" class="w-4 h-4"></i> Abort
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-6">
+          <div
+            class="content-card rounded-[2.5rem] p-6 flex items-center gap-6"
+          >
+            <img
+              src="/<%= history.borrowed_by.profile_photo %>"
+              class="w-20 h-20 rounded-2xl object-cover border-4 border-slate-50 shadow-sm"
+              onerror="this.src='/default_profile_photo.png'"
+            />
+            <div>
+              <span
+                class="bg-red-50 text-red-600 text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest"
+                >Borrower</span
+              >
+              <h4 class="text-xl font-black text-slate-900 mt-2 leading-tight">
+                <%= history.borrowed_by.name %>
+              </h4>
+              <p class="text-slate-500 text-xs font-bold mt-1">
+                Roll: <%= history.borrowed_by.roll_no %> • <%=
+                history.borrowed_by.stream %>
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="content-card rounded-[2.5rem] p-6 flex items-center gap-6"
+          >
+            <div
+              class="w-20 h-28 bg-slate-100 rounded-xl overflow-hidden flex items-center justify-center border border-slate-200 shadow-inner"
+            >
+              <% if (history.borrowed_book.front_page) { %>
+              <img
+                src="/<%= history.borrowed_book.front_page %>"
+                class="w-full h-full object-cover"
+                onerror="this.parentElement.innerHTML='<i data-lucide=\'book-open\' class=\'text-slate-300\'></i>'; lucide.createIcons();"
+              />
+              <% } else { %>
+              <i data-lucide="book-open" class="w-8 h-8 text-slate-300"></i>
+              <% } %>
+            </div>
+            <div>
+              <span
+                class="bg-slate-900 text-white text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-widest"
+                >Academic Resource</span
+              >
+              <h4 class="text-xl font-black text-slate-900 mt-2 leading-tight">
+                <%= history.borrowed_book.title %>
+              </h4>
+              <p class="text-slate-500 text-xs font-medium italic mt-1">
+                Ref: <%= history.borrowed_book.ref_no %> • by <%=
+                history.borrowed_book.author %>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="content-card rounded-[3rem] p-8 shadow-xl flex flex-col justify-between border-none"
+        >
+          <div class="space-y-8">
+            <div
+              class="fine-display rounded-[2rem] p-8 text-center text-white shadow-lg shadow-slate-200"
+            >
+              <p
+                class="text-[10px] font-black uppercase tracking-[0.2em] opacity-60 mb-2"
+              >
+                Total Liability
+              </p>
+              <h2 class="text-5xl font-black tracking-tighter">
+                ₹<%= calculatedFine %>
+              </h2>
+              <div
+                class="inline-block mt-4 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest <%= calculatedFine > 0 ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400' %>"
+              >
+                <%= calculatedFine > 0 ? 'Penalty Applied' : 'Clear Balance' %>
+              </div>
+            </div>
+
+            <div class="space-y-4 px-2">
+              <div
+                class="flex justify-between items-center text-[10px] uppercase tracking-widest font-black text-slate-400"
+              >
+                <span>Issue Date</span>
+                <span class="text-slate-900"
+                  ><%= new Date(history.borrow_date).toLocaleDateString()
+                  %></span
+                >
+              </div>
+              <div
+                class="flex justify-between items-center text-[10px] uppercase tracking-widest font-black text-slate-400"
+              >
+                <span>Due Date</span>
+                <span class="text-red-500"
+                  ><%= new Date(history.return_date).toLocaleDateString()
+                  %></span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-3 mt-10">
+            <button
+              onclick="processReturn(null)"
+              class="w-full h-14 bg-slate-900 hover:bg-green-600 text-white font-black uppercase tracking-[0.2em] text-[11px] rounded-2xl transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+            >
+              <i data-lucide="check-circle" class="w-4 h-4"></i> Complete Return
+            </button>
+            <button
+              onclick="openWaiveModal()"
+              class="w-full h-14 bg-white border border-slate-200 text-slate-400 hover:text-slate-900 font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl transition-all flex items-center justify-center gap-2"
+            >
+              <i data-lucide="sparkles" class="w-4 h-4"></i> Waive / Adjust
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div
+      id="waiveModal"
+      class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-6"
+    >
+      <div
+        class="bg-white w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl border border-slate-100"
+      >
+        <h4 class="text-xl font-black text-slate-900 mb-2">Fine Adjustment</h4>
+        <p
+          class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-8"
+        >
+          Override standard penalty
+        </p>
+
+        <div class="space-y-6">
+          <div class="grid grid-cols-2 gap-3">
+            <button
+              onclick="applyDiscount(0.5)"
+              class="h-12 bg-slate-50 border border-slate-100 rounded-xl text-[10px] font-black text-slate-600 hover:bg-slate-100 uppercase tracking-widest transition"
+            >
+              50% Off
+            </button>
+            <button
+              onclick="applyDiscount(1)"
+              class="h-12 bg-red-50 text-red-600 border border-red-100 rounded-xl text-[10px] font-black hover:bg-red-600 hover:text-white uppercase tracking-widest transition"
+            >
+              Full Waive
+            </button>
+          </div>
+
+          <div class="space-y-2">
+            <label
+              class="text-[10px] text-slate-400 font-black uppercase tracking-widest ml-1"
+              >Settlement Amount (₹)</label
+            >
+            <input
+              type="number"
+              id="manualFineInput"
+              class="w-full h-14 bg-slate-50 border border-slate-200 rounded-2xl px-5 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-red-500/5 transition-all"
+            />
+          </div>
+
+          <div class="flex gap-3 pt-4">
+            <button
+              onclick="closeWaiveModal()"
+              class="flex-1 h-14 bg-slate-100 text-slate-500 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition"
+            >
+              Cancel
+            </button>
+            <button
+              onclick="submitManual()"
+              class="flex-[2] h-14 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-slate-200 hover:bg-red-600 transition"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="customAlert"
+      class="fixed top-6 right-6 z-[100] transform translate-x-[120%] transition-transform duration-500 ease-out"
+    >
+      <div
+        class="bg-white border border-slate-100 rounded-2xl p-5 shadow-2xl flex items-center gap-4 min-w-[320px]"
+      >
+        <div
+          id="alertIconContainer"
+          class="w-10 h-10 rounded-xl flex items-center justify-center"
+        ></div>
+        <div>
+          <h5
+            id="alertTitle"
+            class="text-[10px] font-black uppercase tracking-widest text-slate-900"
+          >
+            Notification
+          </h5>
+          <p
+            id="alertMessage"
+            class="text-[11px] text-slate-500 mt-0.5 font-medium"
+          ></p>
+        </div>
+      </div>
+    </div>
+
+    <%- include('partials/footer') %>
+
+    <script>
+      lucide.createIcons();
+
+      const dataEl = document.getElementById("settlementData");
+      const historyId = dataEl.dataset.historyId;
+      const originalFine = parseFloat(dataEl.dataset.originalFine) || 0;
+
+      function showAlert(message, type = "success") {
+        const alertBox = document.getElementById("customAlert");
+        const iconBox = document.getElementById("alertIconContainer");
+        const title = document.getElementById("alertTitle");
+        const msg = document.getElementById("alertMessage");
+
+        if (type === "error") {
+          iconBox.className =
+            "w-10 h-10 rounded-xl flex items-center justify-center bg-red-50 text-red-600";
+          iconBox.innerHTML =
+            '<i data-lucide="alert-circle" class="w-5 h-5"></i>';
+          title.innerText = "System Error";
+        } else {
+          iconBox.className =
+            "w-10 h-10 rounded-xl flex items-center justify-center bg-green-50 text-green-600";
+          iconBox.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i>';
+          title.innerText = "Process Complete";
+        }
+
+        msg.innerText = message;
+        lucide.createIcons();
+        alertBox.classList.remove("translate-x-[120%]");
+        setTimeout(() => alertBox.classList.add("translate-x-[120%]"), 4000);
+      }
+
+      function openWaiveModal() {
+        document.getElementById("waiveModal").classList.remove("hidden");
+        document.getElementById("manualFineInput").value = originalFine;
+      }
+
+      function closeWaiveModal() {
+        document.getElementById("waiveModal").classList.add("hidden");
+      }
+
+      function applyDiscount(percent) {
+        const newTotal = originalFine - originalFine * percent;
+        document.getElementById("manualFineInput").value = Math.max(
+          0,
+          newTotal
+        ).toFixed(2);
+      }
+
+      async function processReturn(customFine) {
+        const finalFine =
+          customFine !== null ? parseFloat(customFine) : originalFine;
+        const btn = event.currentTarget;
+        const originalHTML = btn.innerHTML;
+
+        btn.disabled = true;
+        btn.innerHTML =
+          '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>';
+        lucide.createIcons();
+
+        try {
+          const res = await fetch(`/borrow/return-book/${historyId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ actualPaid: finalFine }),
+          });
+
+          const data = await res.json();
+          if (res.ok) {
+            showAlert("Book returned successfully.");
+            setTimeout(() => (window.location.href = "/borrow"), 2000);
+          } else {
+            throw new Error(data.message || "Settlement failed.");
+          }
+        } catch (err) {
+          showAlert(err.message, "error");
+          btn.disabled = false;
+          btn.innerHTML = originalHTML;
+          lucide.createIcons();
+        }
+      }
+
+      function submitManual() {
+        const val = document.getElementById("manualFineInput").value;
+        if (val === "" || val < 0) {
+          showAlert("Enter a valid amount.", "error");
+          return;
+        }
+        processReturn(val);
+      }
+    </script>
+  </body>
+</html>

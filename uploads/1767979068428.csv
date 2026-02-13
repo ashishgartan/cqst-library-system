@@ -1,0 +1,51 @@
+ref_no,title,author,genre,subject,description,isbn,publish_year,page_count,stock
+B001,Computer Architecture,David Patterson,Computer Science,CS,Fundamentals of computer architecture,1234567890,2018,550,5
+B002,Operating Systems,Abraham Silberschatz,Computer Science,CS,Concepts of OS,1234567891,2017,650,5
+B003,Data Structures,Narasimha Karumanchi,Computer Science,CS,Data structures explained,1234567892,2019,500,5
+B004,Algorithms,CLRS,Computer Science,CS,Algorithms book,1234567893,2020,700,5
+B005,Database Systems,Elmasri,Computer Science,CS,Database fundamentals,1234567894,2018,600,5
+B006,Networking,Tanenbaum,Computer Science,CS,Networking principles,1234567895,2016,450,5
+B007,Artificial Intelligence,Russell,Computer Science,CS,AI book,1234567896,2019,800,5
+B008,Machine Learning,Goodfellow,Computer Science,CS,ML book,1234567897,2018,750,5
+B009,Compiler Design,Aho,Computer Science,CS,Compiler concepts,1234567898,2015,400,5
+B010,Software Engineering,Sommerville,Computer Science,CS,Software engineering,1234567899,2020,650,5
+B011,Web Development,Jon Duckett,Computer Science,CS,HTML/CSS/JS book,2234567890,2017,400,5
+B012,Python Programming,Mark Lutz,Computer Science,CS,Python language,2234567891,2018,500,5
+B013,Java Programming,Horstmann,Computer Science,CS,Java basics,2234567892,2019,550,5
+B014,C++ Programming,Dersign,Computer Science,CS,C++ fundamentals,2234567893,2016,600,5
+B015,JavaScript,David Flanagan,Computer Science,CS,JS programming,2234567894,2017,450,5
+B016,HTML & CSS,Jon Duckett,Computer Science,CS,Web basics,2234567895,2018,350,5
+B017,React Basics,Kirupa Chinnathambi,Computer Science,CS,React framework,2234567896,2019,400,5
+B018,Node.js Guide,Shelley Powers,Computer Science,CS,Node.js fundamentals,2234567897,2018,450,5
+B019,Angular Guide,Brad Dayley,Computer Science,CS,Angular framework,2234567898,2019,500,5
+B020,Data Science Handbook,Field Cady,Computer Science,CS,Data Science concepts,2234567899,2020,600,5
+B021,Cloud Computing,Buyya,Computer Science,CS,Cloud concepts,3234567890,2017,550,5
+B022,Big Data Fundamentals,Tom White,Computer Science,CS,Big Data book,3234567891,2018,650,5
+B023,Cyber Security,Anderson,Computer Science,CS,Cybersecurity concepts,3234567892,2019,400,5
+B024,Digital Logic,Mano,Computer Science,CS,Logic design,3234567893,2016,350,5
+B025,Microprocessor,Gaonkar,Computer Science,CS,Microprocessor book,3234567894,2015,450,5
+B026,Embedded Systems,Frank Vahid,Computer Science,CS,Embedded systems,3234567895,2017,400,5
+B027,Mobile Computing,Jochen Schiller,Computer Science,CS,Mobile computing,3234567896,2018,550,5
+B028,Computer Graphics,Hearn,Computer Science,CS,Graphics concepts,3234567897,2019,600,5
+B029,Digital Image Processing,Gonzalez,Computer Science,CS,Image processing,3234567898,2020,500,5
+B030,Artificial Neural Networks,Haykin,Computer Science,CS,ANN book,3234567899,2018,450,5
+B031,Quantum Computing,Nielsen,Computer Science,CS,Quantum computing basics,4234567890,2020,300,5
+B032,Deep Learning,Goodfellow,Computer Science,CS,Deep learning book,4234567891,2019,500,5
+B033,Natural Language Processing,Jurafsky,Computer Science,CS,NLP book,4234567892,2018,450,5
+B034,Information Retrieval,Grossman,Computer Science,CS,IR concepts,4234567893,2017,400,5
+B035,Computer Vision,Szeliski,Computer Science,CS,CV book,4234567894,2019,550,5
+B036,Blockchain Basics,Swan,Computer Science,CS,Blockchain fundamentals,4234567895,2020,600,5
+B037,Data Analytics,Provost,Computer Science,CS,Data analytics concepts,4234567896,2018,450,5
+B038,Internet of Things,Ashton,Computer Science,CS,IoT book,4234567897,2017,400,5
+B039,Parallel Computing,Grama,Computer Science,CS,Parallel programming,4234567898,2019,500,5
+B040,Software Testing,Kaner,Computer Science,CS,Testing concepts,4234567899,2018,350,5
+B041,Design Patterns,Gamma,Computer Science,CS,Design patterns book,5234567890,2017,400,5
+B042,Data Mining,Witten,Computer Science,CS,Data mining concepts,5234567891,2016,450,5
+B043,Operating System Internals,Tanenbaum,Computer Science,CS,OS internals,5234567892,2018,500,5
+B044,Computer Networks,Tanenbaum,Computer Science,CS,Networks book,5234567893,2019,600,5
+B045,Programming Language Concepts,Scott,Computer Science,CS,Programming concepts,5234567894,2017,400,5
+B046,Human Computer Interaction,Shneiderman,Computer Science,CS,HCI concepts,5234567895,2016,350,5
+B047,Software Architecture,Buschmann,Computer Science,CS,Software design,5234567896,2018,450,5
+B048,IT Project Management,Schwalbe,Computer Science,CS,Project management,5234567897,2019,500,5
+B049,Enterprise Architecture,Lapalme,Computer Science,CS,Enterprise arch book,5234567898,2020,600,5
+B050,IT Security,Whitman,Computer Science,CS,IT security book,5234567899,2018,450,5
