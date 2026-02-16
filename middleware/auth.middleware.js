@@ -1,41 +1,45 @@
-// middleware/auth.middleware.js
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-// Middleware to inject user data into all templates
+const Admin = require("../models/Admin"); // FIXED: Import the actual Admin model
+
 exports.injectUserIntoHeader = async (req, res, next) => {
-  // 1. Get token from cookies (common for web apps) or headers
-  const token =
-    req.cookies.token ||
-    (req.headers.authorization && req.headers.authorization.split(" ")[1]);
+  const token = req.cookies.token;
 
   if (!token) {
     res.locals.user = null;
     return next();
   }
   try {
-    // 2. Verify Token
     const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
 
-    // 3. Find user and attach to res.locals (excluding password)
-    // Using .lean() makes the query faster for header display
-    const user = await User.findById(decoded.id).select("-password").lean();
+    // Find the admin in the database using the ID from the token
+    const adminUser = await Admin.findById(decoded.id)
+      .select("-password")
+      .lean();
 
-    res.locals.user = user || null;
+    res.locals.user = adminUser || null;
     next();
   } catch (error) {
-    console.error("JWT Middleware Error:", error.message);
     res.locals.user = null;
     next();
   }
 };
-exports.isAuthenticated = (req, res, next) => {
+
+exports.isAuthenticated = async (req, res, next) => {
   const token = req.cookies.token;
   if (!token) return res.redirect("/auth/login");
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
-    req.user = decoded; // Contains id and role
-    console.log(req.user.id);
+
+    // Verify this admin actually exists in the DB
+    const admin = await Admin.findById(decoded.id);
+    if (!admin) {
+      res.clearCookie("token");
+      return res.redirect("/auth/login");
+    }
+
+    req.user = admin; // Attach the full admin object to the request
     next();
   } catch (err) {
     res.clearCookie("token");
@@ -43,21 +47,11 @@ exports.isAuthenticated = (req, res, next) => {
   }
 };
 
-// NEW: Check if the user is a librarian/admin
+// Simplified: If they passed isAuthenticated, they are an admin
 exports.isAdmin = (req, res, next) => {
-  // Check if req.user exists (from isAuthenticated) and if role is librarian
-  if (req.user && req.user.role === "admin") {
+  if (req.user) {
     next();
   } else {
-    // If not admin, send a 403 Forbidden or redirect
-    return res.status(403).render("403", {
-      message: "Access Denied: Librarians only.",
-    });
+    return res.status(403).render("403", { message: "Access Denied." });
   }
-};
-
-exports.isGuest = (req, res, next) => {
-  const token = req.cookies.token;
-  if (token) return res.redirect("/books");
-  next();
 };

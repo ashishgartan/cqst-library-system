@@ -14,8 +14,8 @@ router.post("/logout", ctrl.logout);
 router.post("/change-password", isAuthenticated, ctrl.changePassword);
 
 // --- UI Routes ---
-router.get("/login", isGuest, ctrl.renderLoginPage);
-router.get("/signup", isGuest, ctrl.renderSignupPage);
+router.get("/login", ctrl.renderLoginPage);
+router.get("/signup", ctrl.renderSignupPage);
 
 // 1. New middleware: isAuthenticated
 // 2. New function: renderChangePassword (to show the EJS)

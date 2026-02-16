@@ -1,4 +1,4 @@
-<%- include('head') %>
+<%- include('head') %> <%- include('logoutModel') %>
 
 <header
   class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm"
@@ -79,26 +79,61 @@
           <p class="text-sm font-bold text-gray-800 leading-none">
             <%= user.name %>
           </p>
-          <p class="text-xs text-gray-600 hover:underline hover:text-blue-600">
-            <%= user.email %>
-          </p>
-          <a href="/logout" class="text-xs text-red-600 hover:underline"
-            >Logout</a
-          >
         </div>
         <div class="relative">
-          <a href="/profile">
+          <button onclick="toggleProfileMenu()" class="focus:outline-none">
             <img
-              src="/uploads/<%= user.avatar %>"
+              src="<%= user.avatar ? '/uploads/' + user.avatar : 'https://ui-avatars.com/api/?name=' + user.name + '&background=ef4444&color=fff' %>"
               alt="Profile"
-              class="w-10 h-10 rounded-full border-2 border-red-700 object-cover cursor-pointer hover:opacity-80 transition"
-              onerror="this.src='https://ui-avatars.com/api/?name=<%= user.name %>&background=random'"
-          /></a>
+              class="w-10 h-10 rounded-full border-2 border-red-700 object-cover cursor-pointer hover:ring-4 hover:ring-red-50 transition-all"
+            />
+          </button>
+
+          <div
+            id="profileDropdown"
+            class="absolute right-0 mt-3 w-64 bg-white rounded-xl py-2 shadow-2xl border border-slate-100 hidden flex-col z-[110] transform transition-all origin-top-right"
+          >
+            <div class="px-6 py-3 border-b border-slate-50 mb-2">
+              <p
+                class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1"
+              >
+                Signed in as
+              </p>
+              <p class="text-sm font-bold text-slate-900 truncate">
+                <%= user.email %>
+              </p>
+            </div>
+            <a
+              href="/profile"
+              class="nav-item flex items-center gap-2 px-4 py-2 hover:text-red-700 hover:border-l-2 border-red-700 transition-all"
+              data-path="/profile"
+            >
+              <i data-lucide="user-circle" class="w-4 h-4"></i>
+              <span class="font-bold text-sm">View Profile</span>
+            </a>
+
+            <a
+              href="/auth/change-password"
+              class="nav-item flex items-center gap-2 px-4 py-2 hover:text-red-700 hover:border-l-2 border-red-700 transition-all"
+              data-path="/auth/change-password"
+            >
+              <i data-lucide="key-round" class="w-4 h-4"></i>
+              <span class="font-bold text-sm">Change Password</span>
+            </a>
+            <button
+              onclick="openLogoutModal()"
+              class="nav-item flex items-center gap-2 px-4 py-2 hover:text-red-700 hover:border-l-2 border-red-700 transition-all"
+              data-path="/auth/logout"
+            >
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+              <span class="font-bold text-sm">Log Out</span>
+            </button>
+          </div>
         </div>
       </div>
       <button
         id="mobile-menu-btn"
-        class="lg:hidden p-3 bg-white border border-slate-200 rounded-2xl text-slate-400 hover:text-red-600 transition-all"
+        class="lg:hidden p-3 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-red-600 transition-all"
       >
         <i data-lucide="menu" class="w-5 h-5"></i>
       </button>
@@ -120,26 +155,44 @@
     class="hidden lg:hidden bg-white border-t border-slate-100 p-4 space-y-2"
   >
     <% if (user.role === "admin") { %>
-    <a href="/" class="mobile-nav-item"
+    <a href="/" class="mobile-nav-item flex items-center gap-2 px-4 py-2"
       ><i data-lucide="layout-dashboard"></i>
       <p>Dashboard</p></a
     >
-    <a href="/students" class="mobile-nav-item"
+    <a
+      href="/students"
+      class="mobile-nav-item flex items-center gap-2 px-4 py-2"
       ><i data-lucide="users"></i> Students</a
     >
-    <a href="/borrow" class="mobile-nav-item"
+    <a href="/borrow" class="mobile-nav-item flex items-center gap-2 px-4 py-2"
       ><i data-lucide="arrow-left-right"></i> Issue System</a
     >
-    <a href="/upload" class="mobile-nav-item"
+    <a href="/upload" class="mobile-nav-item flex items-center gap-2 px-4 py-2"
       ><i data-lucide="arrow-left-right"></i>Upload Data</a
     >
     <% } %>
-    <a href="/books" class="mobile-nav-item"
+    <a href="/books" class="mobile-nav-item flex items-center gap-2 px-4 py-2"
       ><i data-lucide="book-marked"></i> Books</a
     >
   </div>
   <% } %>
 
+  <style>
+    .nav-item {
+      @apply flex items-center gap-2 px-4 py-2 text-[11px] font-black uppercase tracking-widest text-slate-400 rounded-xl transition-all duration-200 hover:bg-slate-50 hover:text-slate-900;
+    }
+    .nav-active {
+      @apply bg-red-50 text-red-600 shadow-sm;
+    }
+
+    /* Dropdown Item Styling */
+    .dropdown-item {
+      @apply flex items-center gap-3 px-6 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all;
+    }
+    .dropdown-item svg {
+      @apply w-4 h-4 text-slate-400;
+    }
+  </style>
   <style>
     /* Light Theme Nav Item Styling */
     .nav-item {
@@ -178,22 +231,32 @@
         link.classList.add("nav-active");
       }
     });
+  </script>
 
-    async function handleLogout(btn) {
-      const original = btn.innerHTML;
-      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Terminating...`;
-      lucide.createIcons();
+  <!-- Profile script -->
+  <script>
+    lucide.createIcons();
 
-      try {
-        const response = await fetch("/auth/logout", { method: "POST" });
-        if (response.ok) {
-          localStorage.clear();
-          window.location.href = "/auth/login";
-        }
-      } catch (err) {
-        btn.innerHTML = original;
-        lucide.createIcons();
-      }
+    // Toggle Profile Dropdown
+    function toggleProfileMenu() {
+      const menu = document.getElementById("profileDropdown");
+      menu.classList.toggle("hidden");
+      menu.classList.toggle("flex");
     }
+
+    // Close dropdown when clicking outside
+    window.addEventListener("click", function (e) {
+      const menu = document.getElementById("profileDropdown");
+      const avatar = document.querySelector(
+        'button[onclick="toggleProfileMenu()"]'
+      );
+
+      if (!avatar.contains(e.target) && !menu.contains(e.target)) {
+        menu.classList.add("hidden");
+        menu.classList.remove("flex");
+      }
+    });
+
+    // ... Other scripts for Logout Modal and Mobile Menu ...
   </script>
 </header>

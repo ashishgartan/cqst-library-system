@@ -16,7 +16,7 @@
 
       /* Simple, clean white cards */
       .stat-card {
-        @apply bg-white border border-slate-200 rounded-3xl p-8 shadow-sm transition-all hover:shadow-md;
+        @apply bg-white border border-slate-200 rounded-xl p-8 shadow-sm transition-all hover:shadow-md;
       }
       .label-sub {
         @apply text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 block;
@@ -27,7 +27,7 @@
     </style>
   </head>
   <body class="min-h-screen">
-    <%- include('partials/header') %>
+    <%- include('partials/header') %> <%- include('partials/logoutModel') %>
 
     <main class="max-w-7xl mx-auto p-6 space-y-8">
       <div
@@ -42,12 +42,12 @@
         <div class="flex items-center gap-3">
           <span
             id="liveClock"
-            class="bg-white border border-slate-200 px-4 py-2 rounded-2xl font-bold text-slate-600 shadow-sm"
+            class="bg-white border border-slate-200 px-4 py-2 rounded-xl font-bold text-slate-600 shadow-sm"
             >00:00:00</span
           >
           <button
             onclick="loadDashboard()"
-            class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-2xl font-bold shadow-lg shadow-red-200 transition-all active:scale-95"
+            class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-xl font-bold shadow-lg shadow-red-200 transition-all active:scale-95"
           >
             Refresh Data
           </button>
@@ -100,7 +100,7 @@
         >
           <div class="flex items-center gap-6">
             <div
-              class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600"
+              class="w-16 h-16 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600"
             >
               <i data-lucide="book-open" class="w-8 h-8"></i>
             </div>
@@ -114,7 +114,7 @@
           <div class="h-12 w-px bg-slate-100 hidden sm:block"></div>
           <div class="flex items-center gap-6">
             <div
-              class="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center text-green-600"
+              class="w-16 h-16 bg-green-50 rounded-xl flex items-center justify-center text-green-600"
             >
               <i data-lucide="users" class="w-8 h-8"></i>
             </div>
@@ -132,9 +132,9 @@
         <div class="bg-slate-900 rounded-3xl p-8 shadow-xl shadow-slate-200">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-white font-bold text-lg">Recent Activity</h3>
-            <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+            <span class="w-2 h-2 rounded-xl bg-red-500 animate-pulse"></span>
           </div>
-          <div class="bg-slate-800/50 rounded-2xl p-4">
+          <div class="bg-slate-800/50 rounded-xl p-4">
             <p id="latestBorrow" class="text-slate-300 font-medium text-sm">
               Waiting for latest updates...
             </p>

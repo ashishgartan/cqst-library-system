@@ -1,129 +1,120 @@
 const User = require("../models/User");
+const Admin = require("../models/Admin"); // Import your new Admin model
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 // ============================
-// SIGNUP Logic
+// SIGNUP Logic (Admin Restricted)
 // ============================
 exports.signup = async (req, res) => {
   try {
-    const { name, email, password, roll_no, stream } = req.body;
+    const { name, email, password, adminSecret } = req.body;
 
-    // 1. Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res
-        .status(400)
-        .json({ message: "User already exists with this email" });
+    // 1. SECURITY GATE: Only allow signup if a secret key is provided
+    // Set ADMIN_SIGNUP_SECRET in your .env file
+    if (!adminSecret || adminSecret !== process.env.ADMIN_SIGNUP_SECRET) {
+      return res.status(403).json({
+        message:
+          "Registration is restricted. No new students allowed. Admin access required.",
+      });
     }
 
-    // 2. Hash the password
+    // 2. Check if Admin already exists
+    const existingAdmin = await Admin.findOne({ email });
+    if (existingAdmin) {
+      return res.status(400).json({ message: "Admin already exists" });
+    }
+
+    // 3. Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // 3. Create new user (Role defaults to 'student')
-    const newUser = new User({
+    // 4. Create New Admin
+    const newAdmin = new Admin({
       name,
       email,
       password: hashedPassword,
-      roll_no,
-      stream,
-      role: "student", // Default role
+      role: "admin",
     });
 
-    await newUser.save();
-
-    res.status(201).json({ message: "User registered successfully" });
+    await newAdmin.save();
+    res.status(201).json({ message: "Admin registered successfully" });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: "Signup failed", error: err.message });
   }
 };
 
+
 // ============================
-// LOGIN Logic
+// LOGIN Logic (Simplified)
 // ============================
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body);
-    const user = await User.findOne({ email });
-    console.log(user);
 
+    const user = await Admin.findOne({ email });
+
+    // Ensure user exists before checking password
     if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
-    // Check if user is active (Optional but recommended)
     if (user.isActive === false) {
-      return res
-        .status(403)
-        .json({ message: "Account disabled. Contact librarian." });
+      return res.status(403).json({ message: "Account disabled." });
     }
 
-    const ok = await bcrypt.compare(password, user.password);
-    if (!ok)
-      return res
-        .status(401)
-        .json({ message: "Invalid credentials a,sbdlvabs" });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch)
+      return res.status(401).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_PRIVATE_KEY,
-      { expiresIn: "1d" }
-    );
-    //console.log(token);
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,
+    // FIX: Only store the ID in the token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_PRIVATE_KEY, {
+      expiresIn: "1d",
     });
-    console.log("Login success");
+
+    res.cookie("token", token, { httpOnly: true });
+
     res.json({
       message: "Login success",
-      user: { name: user.name, role: user.role },
+      user: { name: user.name, email: user.email },
     });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ message: "Login error" });
+  }
+};
+
+// ============================
+// PASSWORD & UTILS
+// ============================
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const { id, role } = req.user; // From your auth middleware
+
+    // Use the correct Model based on the role in the token
+    const Model = role === "admin" ? Admin : User;
+    const user = await Model.findById(id);
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch)
+      return res.status(400).json({ message: "Incorrect current password" });
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    await user.save();
+
+    res.json({ success: true, message: "Password updated" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
 exports.logout = (req, res) => {
   res.clearCookie("token");
-  res.json({ message: "Logged out" });
+  res.redirect("/login");
 };
 
-exports.changePassword = async (req, res) => {
-  try {
-    const { currentPassword, newPassword } = req.body;
-    const userId = req.user._id; // Assuming you have auth middleware
-    console.log(currentPassword, newPassword);
-    // 1. Find user and include password (if your schema hides it by default)
-    const user = await User.findById(userId).select("+password");
-
-    // 2. Compare current password
-    const isMatch = await bcrypt.compare(currentPassword, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Current password is incorrect" });
-    }
-
-    // 3. Hash the NEW password
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(newPassword, salt);
-
-    await user.save();
-
-    res.json({ success: true, message: "Password updated successfully" });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
-  }
-};
-exports.renderLoginPage = (req, res) => {
-  res.render("login");
-};
-
-exports.renderSignupPage = (req, res) => {
-  res.render("signup");
-};
-exports.renderChangePassword = (req, res) => {
-  res.render("changePassword");
-};
+// ============================
+// VIEW RENDERING
+// ============================
+exports.renderLoginPage = (req, res) => res.render("login");
+exports.renderSignupPage = (req, res) => res.render("signup");
+exports.renderChangePassword = (req, res) => res.render("changePassword");

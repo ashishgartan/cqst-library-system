@@ -63,7 +63,7 @@
           >
             <img
               src="/<%= history.borrowed_by.profile_photo %>"
-              class="w-20 h-20 rounded-2xl object-cover border-4 border-slate-50 shadow-sm"
+              class="w-20 h-20 rounded-xl object-cover border-4 border-slate-50 shadow-sm"
               onerror="this.src='/default_profile_photo.png'"
             />
             <div>
@@ -129,7 +129,7 @@
                 ₹<%= calculatedFine %>
               </h2>
               <div
-                class="inline-block mt-4 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest <%= calculatedFine > 0 ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400' %>"
+                class="inline-block mt-4 px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-widest <%= calculatedFine > 0 ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400' %>"
               >
                 <%= calculatedFine > 0 ? 'Penalty Applied' : 'Clear Balance' %>
               </div>
@@ -160,13 +160,13 @@
           <div class="space-y-3 mt-10">
             <button
               onclick="processReturn(null)"
-              class="w-full h-14 bg-slate-900 hover:bg-green-600 text-white font-black uppercase tracking-[0.2em] text-[11px] rounded-2xl transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+              class="w-full h-14 bg-slate-900 hover:bg-green-600 text-white font-black uppercase tracking-[0.2em] text-[11px] rounded-xl transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
             >
               <i data-lucide="check-circle" class="w-4 h-4"></i> Complete Return
             </button>
             <button
               onclick="openWaiveModal()"
-              class="w-full h-14 bg-white border border-slate-200 text-slate-400 hover:text-slate-900 font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl transition-all flex items-center justify-center gap-2"
+              class="w-full h-14 bg-white border border-slate-200 text-slate-400 hover:text-slate-900 font-black uppercase tracking-[0.2em] text-[10px] rounded-xl transition-all flex items-center justify-center gap-2"
             >
               <i data-lucide="sparkles" class="w-4 h-4"></i> Waive / Adjust
             </button>
@@ -213,20 +213,20 @@
             <input
               type="number"
               id="manualFineInput"
-              class="w-full h-14 bg-slate-50 border border-slate-200 rounded-2xl px-5 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-red-500/5 transition-all"
+              class="w-full h-14 bg-slate-50 border border-slate-200 rounded-xl px-5 text-slate-900 font-bold outline-none focus:ring-4 focus:ring-red-500/5 transition-all"
             />
           </div>
 
           <div class="flex gap-3 pt-4">
             <button
               onclick="closeWaiveModal()"
-              class="flex-1 h-14 bg-slate-100 text-slate-500 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition"
+              class="flex-1 h-14 bg-slate-100 text-slate-500 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition"
             >
               Cancel
             </button>
             <button
               onclick="submitManual()"
-              class="flex-[2] h-14 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-slate-200 hover:bg-red-600 transition"
+              class="flex-[2] h-14 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-slate-200 hover:bg-red-600 transition"
             >
               Confirm
             </button>
@@ -240,7 +240,7 @@
       class="fixed top-6 right-6 z-[100] transform translate-x-[120%] transition-transform duration-500 ease-out"
     >
       <div
-        class="bg-white border border-slate-100 rounded-2xl p-5 shadow-2xl flex items-center gap-4 min-w-[320px]"
+        class="bg-white border border-slate-100 rounded-xl p-5 shadow-2xl flex items-center gap-4 min-w-[320px]"
       >
         <div
           id="alertIconContainer"

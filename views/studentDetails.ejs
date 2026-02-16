@@ -75,7 +75,7 @@
 
           <div class="flex-1 text-center md:text-left">
             <span
-              class="bg-red-50 text-red-600 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest"
+              class="bg-red-50 text-red-600 text-[10px] font-black px-3 py-1 rounded-xl uppercase tracking-widest"
               >Student Profile</span
             >
             <h1 class="text-4xl font-black text-slate-900 mt-3 tracking-tight">
@@ -90,7 +90,7 @@
 
           <div
             id="statusBadge"
-            class="px-6 py-3 rounded-2xl text-[10px] font-black tracking-[0.2em] shadow-sm <%= student.isActive ? 'bg-green-50 text-green-600 border border-green-100' : 'bg-slate-100 text-slate-400' %>"
+            class="px-6 py-3 rounded-xl text-[10px] font-black tracking-[0.2em] shadow-sm <%= student.isActive ? 'bg-green-50 text-green-600 border border-green-100' : 'bg-slate-100 text-slate-400' %>"
           >
             <%= student.isActive ? 'ACCESS: ACTIVE' : 'ACCESS: REVOKED' %>
           </div>
@@ -168,7 +168,7 @@
               <input type="checkbox" id="isActive" class="sr-only peer" <%=
               student.isActive ? 'checked' : '' %>>
               <div
-                class="w-14 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-red-600 after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-[20px] after:w-[20px] after:transition-all shadow-inner"
+                class="w-14 h-7 bg-slate-200 peer-focus:outline-none rounded-xl peer peer-checked:after:translate-x-full peer-checked:bg-red-600 after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-xl after:h-[20px] after:w-[20px] after:transition-all shadow-inner"
               ></div>
             </label>
           </div>
@@ -176,7 +176,7 @@
           <button
             type="submit"
             id="saveBtn"
-            class="w-full bg-slate-900 hover:bg-red-600 text-white font-black py-4 rounded-2xl transition shadow-xl shadow-slate-200 flex justify-center items-center gap-3 uppercase tracking-widest text-xs"
+            class="w-full bg-slate-900 hover:bg-red-600 text-white font-black py-4 rounded-xl transition shadow-xl shadow-slate-200 flex justify-center items-center gap-3 uppercase tracking-widest text-xs"
           >
             Save Changes
           </button>
@@ -352,7 +352,7 @@
               </td>
               <td class="px-6 py-5">
                 <div class="flex flex-col items-center gap-2">
-                  <span class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
+                  <span class="px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-widest ${
                     isReturned
                       ? "bg-green-50 text-green-600"
                       : "bg-red-50 text-red-600"

@@ -1,0 +1,93 @@
+<div
+  id="logoutModal"
+  class="fixed inset-0 z-[100] hidden items-center justify-center p-4"
+>
+  <div
+    class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+    onclick="closeLogoutModal()"
+  ></div>
+
+  <div
+    id="modalCard"
+    class="relative bg-white w-full max-w-sm rounded-xl p-10 shadow-2xl border border-slate-100 transform transition-all scale-95 opacity-0"
+  >
+    <div class="text-center">
+      <div
+        class="inline-flex items-center justify-center w-100 h-10 rounded-xl bg-red-50 text-red-600 mb-6 shadow-inner"
+      >
+        <i data-lucide="log-out" class="w-10 h-10"></i>
+      </div>
+      <h3 class="text-2xl font-black text-slate-900 tracking-tight">
+        Sign Out
+      </h3>
+      <p class="text-slate-500 text-sm mt-3 font-medium px-4">
+        Are you sure you want to exit the
+        <span class="text-slate-900 font-bold">CQST Library</span> system?
+      </p>
+    </div>
+
+    <div class="mt-10 flex flex-row gap-2">
+      <button
+        onclick="executeLogout(this)"
+        class="w-full bg-slate-900 hover:bg-red-600 text-white font-black py-4 rounded-xl transition-all shadow-xl shadow-slate-200 active:scale-95 flex items-center justify-center gap-2 uppercase tracking-widest text-[10px]"
+      >
+        Confirm Logout
+      </button>
+      <button
+        onclick="closeLogoutModal()"
+        class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-black py-4 rounded-xl transition-all active:scale-95 uppercase tracking-widest text-[10px]"
+      >
+        Go Back
+      </button>
+    </div>
+  </div>
+</div>
+<!-- Logout Script -->
+<script>
+  const modal = document.getElementById("logoutModal");
+  const card = document.getElementById("modalCard");
+
+  // 1. Open Modal
+  function openLogoutModal() {
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    // Animate in
+    setTimeout(() => {
+      card.classList.remove("scale-95", "opacity-0");
+      card.classList.add("scale-100", "opacity-100");
+    }, 10);
+  }
+
+  // 2. Close Modal
+  function closeLogoutModal() {
+    card.classList.add("scale-95", "opacity-0");
+    card.classList.remove("scale-100", "opacity-100");
+    setTimeout(() => {
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }, 200);
+  }
+
+  // 3. Execute Logout
+  async function executeLogout(btn) {
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Processing...`;
+    lucide.createIcons();
+
+    try {
+      const res = await fetch("/auth/logout", { method: "POST" });
+      if (res.ok) {
+        localStorage.clear();
+        window.location.href = "/auth/login";
+      } else {
+        throw new Error();
+      }
+    } catch (err) {
+      alert("Logout failed. Please try again.");
+      btn.disabled = false;
+      btn.innerHTML = original;
+      lucide.createIcons();
+    }
+  }
+</script>

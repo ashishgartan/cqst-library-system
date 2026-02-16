@@ -42,7 +42,7 @@
           Back to Inventory
         </a>
 
-        <div class="form-card rounded-3xl overflow-hidden">
+        <div class="form-card rounded-xl overflow-hidden">
           <div
             class="p-8 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row items-center gap-8"
           >
@@ -76,16 +76,16 @@
                 class="flex flex-wrap items-center justify-center sm:justify-start gap-2 mb-2"
               >
                 <span
-                  class="px-2.5 py-1 bg-slate-200 text-slate-700 text-[10px] font-bold uppercase tracking-wider rounded-lg"
+                  class="px-2.5 py-1 bg-slate-200 text-slate-700 text-[10px] font-bold uppercase tracking-wider rounded-xl"
                 >
                   Ref: <%= book.ref_no %>
                 </span>
                 <div
                   id="statusBadge"
-                  class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider <%= book.isActive ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500' %>"
+                  class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[10px] font-bold tracking-wider <%= book.isActive ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500' %>"
                 >
                   <div
-                    class="w-1.5 h-1.5 rounded-full <%= book.isActive ? 'bg-green-500' : 'bg-slate-400' %>"
+                    class="w-1.5 h-1.5 rounded-xl <%= book.isActive ? 'bg-green-500' : 'bg-slate-400' %>"
                   ></div>
                   <%= book.isActive ? 'IN STOCK' : 'UNAVAILABLE' %>
                 </div>
@@ -215,7 +215,7 @@
             </div>
 
             <div
-              class="flex items-center justify-between p-5 bg-slate-50 rounded-2xl border border-slate-100"
+              class="flex items-center justify-between p-5 bg-slate-50 rounded-xl border border-slate-100"
             >
               <div class="flex items-center gap-3">
                 <i data-lucide="info" class="w-5 h-5 text-slate-400"></i>
@@ -229,7 +229,7 @@
                 <input type="checkbox" id="statusToggle" class="sr-only peer"
                 <%= book.isActive ? 'checked' : '' %>>
                 <div
-                  class="w-11 h-6 bg-slate-300 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"
+                  class="w-11 h-6 bg-slate-300 rounded-xl peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-xl after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"
                 ></div>
               </label>
             </div>
@@ -264,7 +264,7 @@
       class="fixed top-6 right-6 z-[100] transform translate-x-[150%] transition-transform duration-500 ease-out"
     >
       <div
-        class="bg-white border border-slate-200 rounded-2xl p-4 shadow-2xl flex items-center gap-4 min-w-[300px]"
+        class="bg-white border border-slate-200 rounded-xl p-4 shadow-2xl flex items-center gap-4 min-w-[300px]"
       >
         <div
           id="alertIconContainer"
@@ -330,7 +330,7 @@
           const originalHTML = btn.innerHTML;
           btn.disabled = true;
           btn.innerHTML =
-            '<span class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span>';
+            '<span class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-xl"></span>';
 
           const formData = new FormData(e.target);
           formData.append("ref_no", "<%= book.ref_no %>");
