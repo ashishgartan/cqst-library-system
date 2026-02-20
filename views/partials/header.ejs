@@ -120,6 +120,14 @@
               <i data-lucide="key-round" class="w-4 h-4"></i>
               <span class="font-bold text-sm">Change Password</span>
             </a>
+            <a
+              href="/settings"
+              class="nav-item flex items-center gap-2 px-4 py-2 hover:text-red-700 hover:border-l-2 border-red-700 transition-all"
+              data-path="/setting"
+            >
+              <i data-lucide="settings" class="w-4 h-4"></i>
+              <span class="font-bold text-sm">Setting</span>
+            </a>
             <button
               onclick="openLogoutModal()"
               class="nav-item flex items-center gap-2 px-4 py-2 hover:text-red-700 hover:border-l-2 border-red-700 transition-all"
@@ -251,10 +259,10 @@
         'button[onclick="toggleProfileMenu()"]'
       );
 
-      if (!avatar.contains(e.target) && !menu.contains(e.target)) {
-        menu.classList.add("hidden");
-        menu.classList.remove("flex");
-      }
+      // if (!avatar.contains(e.target) && !menu.contains(e.target)) {
+      //   menu.classList.add("hidden");
+      //   menu.classList.remove("flex");
+      // }
     });
 
     // ... Other scripts for Logout Modal and Mobile Menu ...

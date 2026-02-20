@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Student Registry | CQST Library</title>
+    <title>Student List | CQST Library</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -93,7 +93,7 @@
               id="historySearch"
               type="text"
               placeholder="Search by name, roll number, or email handle..."
-              class="search-input w-full pl-14 pr-16 py-4 rounded-[1.5rem] bg-slate-100/50 border border-slate-200 text-sm font-semibold outline-none transition-all placeholder:text-slate-400"
+              class="search-input w-full pl-14 pr-16 py-4 rounded-xl bg-slate-100/50 border border-slate-200 text-sm font-semibold outline-none transition-all placeholder:text-slate-400"
             />
             <button
               onclick="toggleAdvancedSearch()"
@@ -109,7 +109,7 @@
           </div>
 
           <div
-            class="lg:col-span-4 flex items-center px-4 bg-white border border-slate-200 rounded-[1.5rem] shadow-sm"
+            class="lg:col-span-4 flex items-center px-4 bg-white border border-slate-200 rounded-xl shadow-sm"
           >
             <span
               class="text-[10px] font-black text-slate-300 uppercase tracking-widest mr-4"
@@ -132,7 +132,7 @@
           class="hidden opacity-0 -translate-y-4 transition-all duration-300"
         >
           <div
-            class="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl shadow-slate-200/50"
+            class="bg-white border border-slate-200 rounded-xl p-8 shadow-xl shadow-slate-200/50"
           >
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div class="space-y-3">
@@ -181,7 +181,7 @@
         </div>
         <!-- Table and Pagination UI -->
         <div
-          class="content-card rounded-[2.5rem] overflow-hidden border-none shadow-xl"
+          class="content-card rounded-xl overflow-hidden border-none shadow-xl"
         >
           <!-- Table Head UI -->
           <div class="overflow-x-auto">
@@ -299,12 +299,12 @@
                 </div>
               </td>
               <td>
-                <span class="px-3 py-1 bg-slate-100 text-slate-500 text-[9px] font-black uppercase rounded-lg border border-slate-200">
+                <span class="px-3 py-1 bg-slate-100 text-slate-500 text-[9px] font-black uppercase rounded-xl border border-slate-200">
                   ${s.batch || s.stream || "General"}
                 </span>
               </td>
               <td class="font-mono text-xs font-bold text-slate-400">
-                <span class="text-red-500/60">${
+                <span class="text-red-600">${
                   s.student_id || "ID-NA"
                 }</span> / ${s.roll_no}
               </td>
@@ -368,7 +368,7 @@
        * Fetches data from the server with current filters and pagination
        */
       async function loadStudents(page = 1) {
-        elements.tbody.innerHTML = `<tr><td colspan="5" class="py-24 text-center"><div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-200 border-t-red-500"></div></td></tr>`;
+        elements.tbody.innerHTML = `<tr><td colspan="5" class="py-24 text-center"><div class="inline-block animate-spin rounded-xl h-8 w-8 border-4 border-slate-200 border-t-red-500"></div></td></tr>`;
         try {
           const res = await fetch(
             `/students/paginated?${getDynamicQuery(page)}`
