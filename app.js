@@ -23,10 +23,6 @@ app.use(express.static("public/uploads/profilephotos"));
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.use(cookieParser()); // 2. Use it (Must be before routes!)
-app.use(injectUserIntoHeader);
-// --- Main routes ---
-app.use("/", require("./routes/index"));
-// This route is for LOCAL DEVELOPMENT ONLY. Never put this on a real website.
 app.get("/get-all-users", async (req, res) => {
   try {
     // We REMOVE the .select("-password") to include the field
@@ -49,6 +45,11 @@ app.get("/get-all-users", async (req, res) => {
     res.status(500).json({ success: false, message: "Server Error" });
   }
 });
+app.use(injectUserIntoHeader);
+// --- Main routes ---
+app.use("/", require("./routes/index"));
+// This route is for LOCAL DEVELOPMENT ONLY. Never put this on a real website.
+
 // --- 404 handler ---
 app.use((req, res) => {
   res.render("404");
