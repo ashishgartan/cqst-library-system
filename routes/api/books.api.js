@@ -12,6 +12,7 @@ const {
 // ============================
 // Everyone (Students & Librarians) can view the collection
 router.get("/", isAuthenticated, ctrl.renderBooksPage);
+router.delete("/:id", isAuthenticated, isAdmin, ctrl.deleteBook);
 router.get("/paginated", isAuthenticated, ctrl.getPaginatedBooks);
 router.get("/search", isAuthenticated, ctrl.searchBooks);
 router.get("/subjects", isAuthenticated, ctrl.getAllSubjects);

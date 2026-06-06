@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;600;800&display=swap");
       body {
         font-family: "Plus Jakarta Sans", sans-serif;
         background-color: #f8fafc;
@@ -70,6 +70,7 @@
             <% if (user && user.role === 'admin') { %>
             <button
               id="exportBooksBtn"
+              onclick="exportBooks()"
               class="px-5 py-2.5 bg-white border border-slate-200 rounded-xl text-[11px] font-bold text-slate-600 hover:bg-slate-50 transition-all uppercase tracking-wider flex items-center gap-2 shadow-sm"
             >
               <i data-lucide="download" class="w-4 h-4"></i> Download CSV
@@ -251,13 +252,54 @@
       </div>
     </main>
 
+    <div id="deleteModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+      <div class="bg-white max-w-sm w-full rounded-xl border border-slate-200 p-6 shadow-2xl relative space-y-4">
+        <div class="text-center">
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-red-50 text-red-600 mb-4">
+            <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-base font-black text-slate-900 tracking-tight">Permanent Removal</h3>
+          <p class="text-xs text-slate-500 mt-1 font-medium">
+            You are deleting <span id="deleteTargetTitle" class="font-bold text-slate-800"></span>. This operation cannot be undone.
+          </p>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 text-center">
+          <span class="text-[10px] font-black uppercase text-slate-400 tracking-widest block mb-1">Verification Code</span>
+          <span id="generatedCodeDisplay" class="text-2xl font-black tracking-[0.25em] text-slate-900 select-none font-mono">0000</span>
+        </div>
+
+        <div class="space-y-2">
+          <input
+            id="deleteConfirmInput"
+            type="text"
+            maxlength="4"
+            placeholder="Enter 4-digit code"
+            class="w-full text-center tracking-widest font-mono font-bold bg-slate-50 border border-slate-200 rounded-xl py-3 outline-none focus:border-red-500 focus:ring-4 focus:ring-red-500/5 placeholder:tracking-normal placeholder:font-sans"
+          />
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button onclick="closeDeleteModal()" type="button" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs rounded-xl transition-all uppercase tracking-wider">
+            Cancel
+          </button>
+          <button id="confirmDeleteBtn" onclick="submitDelete()" type="button" class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-black text-xs rounded-xl transition-all uppercase tracking-wider shadow-lg shadow-red-100">
+            Confirm Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
     <%- include('partials/footer') %>
 
     <script>
       lucide.createIcons();
 
       let currentPage = 1;
+      let targetBookId = null;
+      let currentVerificationCode = "";
       const currentUserRole = "<%= user ? user.role : 'guest' %>";
+      
       const elements = {
         tbody: document.getElementById("bookList"),
         searchInput: document.getElementById("historySearch"),
@@ -362,23 +404,18 @@
                 ${
                   currentUserRole === "admin"
                     ? `
-                  <a href="/borrow?ref=${
-                    b.ref_no
-                  }" class="p-2.5 bg-slate-100 hover:bg-red-600 text-slate-500 hover:text-white rounded-xl transition-all" title="Manage Issue">
-                    <i data-lucide="${
-                      isAvailable ? "arrow-up-right" : "rotate-ccw"
-                    }" class="w-4 h-4"></i>
+                  <a href="/borrow?ref=${b.ref_no}" class="p-2.5 bg-slate-100 hover:bg-red-600 text-slate-500 hover:text-white rounded-xl transition-all" title="Manage Issue">
+                    <i data-lucide="${isAvailable ? "arrow-up-right" : "rotate-ccw"}" class="w-4 h-4"></i>
                   </a>
-                  <a href="/books/details/${
-                    b._id
-                  }" class="p-2.5 bg-slate-100 hover:bg-slate-900 text-slate-500 hover:text-white rounded-xl transition-all" title="Edit Details">
+                  <a href="/books/details/${b._id}" class="p-2.5 bg-slate-100 hover:bg-slate-900 text-slate-500 hover:text-white rounded-xl transition-all" title="Edit Details">
                     <i data-lucide="settings-2" class="w-4 h-4"></i>
                   </a>
+                  <button onclick="openDeleteModal('${b._id}', '${b.title.replace(/'/g, "\\'")}')" class="p-2.5 bg-slate-100 hover:bg-red-600 text-slate-500 hover:text-white rounded-xl transition-all" title="Delete Book">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                  </button>
                 `
                     : `
-                  <button ${
-                    !isAvailable ? "disabled" : ""
-                  } class="px-4 py-2 bg-slate-100 ${
+                  <button ${!isAvailable ? "disabled" : ""} class="px-4 py-2 bg-slate-100 ${
                         isAvailable
                           ? "hover:bg-red-600 hover:text-white text-slate-600"
                           : "opacity-30 cursor-not-allowed text-slate-400"
@@ -392,9 +429,7 @@
           </tr>`;
         });
 
-        elements.recordCount.textContent = `${
-          data.totalBooks || 0
-        } Books Found`;
+        elements.recordCount.textContent = `${data.totalBooks || 0} Books Found`;
         renderPagination(data.totalPages, data.currentPage);
         lucide.createIcons();
       }
@@ -431,7 +466,6 @@
         try {
           const res = await fetch(`/books/paginated?${getDynamicQuery(page)}`);
           const data = await res.json();
-          console.log(data);
           renderBooks(data);
         } catch (err) {
           elements.tbody.innerHTML = `<tr><td colspan="5" class="text-center py-24 text-red-500 text-xs font-bold">Failed to load data. Please refresh.</td></tr>`;
@@ -481,6 +515,67 @@
         }
       }
 
+      // Security Modal Interactive Methods
+      function openDeleteModal(bookId, bookTitle) {
+        targetBookId = bookId;
+        document.getElementById("deleteTargetTitle").textContent = `"${bookTitle}"`;
+        
+        // Generate random 4-digit token
+        currentVerificationCode = Math.floor(1000 + Math.random() * 9000).toString();
+        document.getElementById("generatedCodeDisplay").textContent = currentVerificationCode;
+        
+        const inputField = document.getElementById("deleteConfirmInput");
+        inputField.value = "";
+        inputField.classList.remove("border-red-500");
+        
+        document.getElementById("deleteModal").classList.remove("hidden");
+        inputField.focus();
+        lucide.createIcons();
+      }
+
+      function closeDeleteModal() {
+        targetBookId = null;
+        document.getElementById("deleteModal").classList.add("hidden");
+      }
+
+      async function submitDelete() {
+        const userInput = document.getElementById("deleteConfirmInput").value.trim();
+        const confirmBtn = document.getElementById("confirmDeleteBtn");
+        const inputField = document.getElementById("deleteConfirmInput");
+
+        // Client validation gate
+        if (userInput !== currentVerificationCode) {
+          inputField.classList.add("border-red-500");
+          inputField.focus();
+          return;
+        }
+
+        try {
+          confirmBtn.disabled = true;
+          confirmBtn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin mx-auto"></i>`;
+          lucide.createIcons();
+
+          const res = await fetch(`/books/${targetBookId}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" }
+          });
+
+          if (res.ok) {
+            closeDeleteModal();
+            loadBooks(currentPage); // Dynamic asynchronous update
+          } else {
+            const errorData = await res.json();
+            alert(errorData.message || "Failed to remove book record.");
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = "Confirm Delete";
+          }
+        } catch (err) {
+          alert("Server communication breakdown. Please check your backend connection.");
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = "Confirm Delete";
+        }
+      }
+
       elements.limitSelector.addEventListener("change", searchFun);
       elements.searchInput.addEventListener("input", () => {
         clearTimeout(window.searchTimeout);
@@ -489,7 +584,6 @@
 
       document.addEventListener("DOMContentLoaded", () => {
         loadBooks(1);
-        // Load subjects dynamically if endpoint exists
         fetch("/books/subjects")
           .then((res) => res.json())
           .then((data) => {

@@ -2,69 +2,6 @@
 const Book = require("../models/Book"); // Ensure paths are correct
 const BorrowHistory = require("../models/BorrowHistory");
 
-// ============================
-// API & UI: Get paginated books
-// Route: GET /api/books/paginated?page=1
-// ============================
-// exports.getPaginatedBooks = async (req, res) => {
-//   try {
-//     // 1. Parse query parameters
-//     const { q, category, status, limit } = req.query;
-//     const page = parseInt(req.query.page) || 1;
-//     const pageLimit = parseInt(limit) || 10;
-//     const skip = (page - 1) * pageLimit;
-
-//     // 2. Build the Dynamic Filter Object
-//     let query = {};
-
-//     // Search by Title, Author, or ISBN
-//     if (q) {
-//       query.$or = [
-//         { title: { $regex: q, $options: "i" } },
-//         { author: { $regex: q, $options: "i" } },
-//         { isbn: { $regex: q, $options: "i" } },
-//       ];
-//     }
-
-//     // Filter by Category (e.g., "Computer Science", "Fiction")
-//     if (category) {
-//       query.category = category;
-//     }
-
-//     // Filter by Availability Status
-//     // If status is 'available', we look for books where 'available_copies' > 0
-//     if (status === "available") {
-//       query.available_copies = { $gt: 0 };
-//     } else if (status === "out_of_stock") {
-//       query.available_copies = { $eq: 0 };
-//     }
-
-//     // 3. Execute Database Operations
-//     const [books, total] = await Promise.all([
-//       Book.find(query)
-//         .sort({ createdAt: -1 })
-//         .skip(skip)
-//         .limit(pageLimit)
-//         .lean(), // Lean makes the query faster
-//       Book.countDocuments(query),
-//     ]);
-
-//     // 4. Send Response
-//     res.json({
-//       success: true,
-//       books,
-//       totalPages: Math.ceil(total / pageLimit),
-//       currentPage: page,
-//       totalBooks: total,
-//     });
-//   } catch (err) {
-//     console.error("Book Pagination Error:", err);
-//     res.status(500).json({
-//       success: false,
-//       message: "Failed to fetch books from catalog",
-//     });
-//   }
-// };
 exports.getPaginatedBooks = async (req, res) => {
   try {
     // 1. Destructure all possible query parameters from the URL
@@ -337,15 +274,36 @@ exports.updateBook = async (req, res) => {
   }
 };
 
+
 // ============================
 // API: Delete Book
-// Route: DELETE /api/books/:id
+// Route: DELETE /books/:id
 // ============================
 exports.deleteBook = async (req, res) => {
   try {
-    await Book.findByIdAndDelete(req.params.id);
-    res.json({ success: true, message: "Book deleted" });
+    const { id } = req.params;
+
+    // Perform the permanent deletion from the database collection
+    const deletedBook = await Book.findByIdAndDelete(id);
+
+    if (!deletedBook) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "Book record could not be found or was already deleted." 
+      });
+    }
+
+    // Return success to the frontend to trigger the silent row removal
+    return res.status(200).json({ 
+      success: true, 
+      message: "Book deleted completely from database." 
+    });
+
   } catch (err) {
-    res.status(500).json({ error: "Delete failed" });
+    console.error("Delete Endpoint Error:", err);
+    return res.status(500).json({ 
+      success: false, 
+      message: "Internal server error during permanent removal action." 
+    });
   }
 };
